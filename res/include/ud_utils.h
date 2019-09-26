@@ -1,5 +1,5 @@
-#ifndef UD_UT_H
-# define UD_UT_H
+#ifndef UD_UTILS_H
+# define UD_UTILS_H
 
 // Lib
 #include <stdlib.h>
