@@ -1,2 +1,2 @@
-# ud_ut-Lib
+# Utils Lib by Undefined
 Simple C lib for multiple tools
