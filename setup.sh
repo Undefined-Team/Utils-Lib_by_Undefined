@@ -105,7 +105,11 @@ done
 
 # 4 - Install
 cp res/include/* $ud_lib_path/include/
-make
+if [ -z "$1" ] ; then
+    make
+else
+    make > /dev/null 2>&1
+fi
 cp *.a $ud_lib_path/lib/
 exec bash
 exit 0
