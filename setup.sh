@@ -31,7 +31,6 @@ function info_print {
 if [ -z "$1" ] ; then
     echo ""
 fi
-echo wsh
 new_path_array=("$ud_lib_path/lib" "$ud_lib_path/include")
 path_name_array=("LD_LIBRARY_PATH" "C_INCLUDE_PATH")
 path_array=("$LD_LIBRARY_PATH" "$C_INCLUDE_PATH")
@@ -105,13 +104,25 @@ done
 # 4 - Install
 if [ -z "$1" ] ; then
     info_print "\nStart compiling"
-    cp res/include/* $ud_lib_path/include/
-    make
-    cp *.a $ud_lib_path/lib/
+    if !(cp res/include/* $ud_lib_path/include/); then
+        error_print "Copy headers files to $ud_lib_path/include/ failed"
+    fi
+    if !(make); then
+        error_print "Compilation failed"
+    fi
+    if !(cp *.a $ud_lib_path/lib/); then
+        error_print "Copy compiled files to $ud_lib_path/lib/ failed"
+    fi
     exec bash
 else
-    cp $actual_folder/res/include/* $ud_lib_path/include/
-    make -C $actual_folder > /dev/null 2>&1
-    cp $actual_folder/*.a $ud_lib_path/lib/
+    if !(cp $actual_folder/res/include/* $ud_lib_path/include/); then
+        error_print "Copy headers files to $ud_lib_path/include/ failed"
+    fi
+    if !(make -C $actual_folder > /dev/null 2>&1); then
+        error_print "Compilation failed"
+    fi
+    if !(cp $actual_folder/*.a $ud_lib_path/lib/); then
+        error_print "Copy compiled files to $ud_lib_path/lib/ failed"
+    fi
 fi
 exit 0
