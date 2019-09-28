@@ -1,8 +1,15 @@
 #!/bin/bash
 
+# -------------------------------------------------------------
+
 # How to use setup.sh ?
 # 1 chmod +x setup.sh
 # 2 ./setup.sh
+
+dependences=()
+dependences+="Utils"
+
+# -------------------------------------------------------------
 
 ud_lib_path="$HOME/ud_lib"
 
@@ -69,7 +76,6 @@ done
 # 3 - Dependences
 dep_prefix="https://github.com/tdautreme/"
 dep_suffix="-Lib_by_Undefined"
-dependences=("Utils")
 for dep in "${dependences[@]}"; do
     actual_folder="${ud_lib_path}/clone/$dep"
     git_clone_link="$dep_prefix$dep$dep_suffix"
