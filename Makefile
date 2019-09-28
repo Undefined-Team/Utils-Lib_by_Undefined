@@ -21,7 +21,7 @@ COMPILE           =     $(CC) $(FLAGS) $(INCLUDE)
 
 # Colors
 R                 =     \033[0;31m
-G                 =     \033[32;7m
+G                 =     \033[1;32m
 B                 =     \033[0;34m
 N                 =     \33[0m
 # Colors
@@ -30,9 +30,9 @@ all: $(NAME)
 
 $(NAME): $(BIN)
 	@ar rc ${LIBNAME} $^
-	@echo "\n${N}Library ${LIBNAME} compiled."
+	@echo "	$(G)Success: Library ${LIBNAME} compiled.$(N)"
 	@ranlib ${LIBNAME}
-	@echo "Library ${LIBNAME} indexed."
+	@echo "	$(G)Success: Library ${LIBNAME} indexed.$(N)"
 
 $(BIN_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir -p $(BIN_PATH) || true
