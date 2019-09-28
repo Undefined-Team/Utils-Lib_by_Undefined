@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# -------------------------------------------------------------
+# ------------------------------------------------------------- #
 
 # How to use setup.sh ?
 # 1 chmod +x setup.sh
@@ -13,7 +13,7 @@ dependences=()
 
 dependences+="https://github.com/tdautreme/Utils-Lib_by_Undefined"
 
-# -------------------------------------------------------------
+# ------------------------------------------------------------- #
 
 ud_lib_path="$HOME/ud_lib"
 
@@ -81,7 +81,7 @@ done
 for dep in "${dependences[@]}"; do
     actual_folder="${ud_lib_path}/clone/$dep"
     if [ ! -d "$actual_folder" ]; then
-        info_print "Try install $dep dependence"
+        info_print "Trying install $dep dependence"
         printf "    "
         if !(git clone $dep $actual_folder > /dev/null 2>&1) ; then
             error_print "Can't download dependence $git_clone_link"
