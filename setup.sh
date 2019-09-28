@@ -7,6 +7,11 @@
 # 2 ./setup.sh
 
 dependences=()
+
+# Set projet git hub dependences here like this:
+# If your dependence github link is https://github.com/tdautreme/Memory-Lib_by_Undefined then just use Memory
+# dependences+="Memory"
+
 dependences+="Utils"
 
 # -------------------------------------------------------------
