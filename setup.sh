@@ -66,13 +66,6 @@ for lib_folder in "${lib_folder_array[@]}"; do
     fi
 done
 
-# if $(./error.sh) ; then
-#     echo work
-# else
-#     echo not work
-# fi
-# echo $(./error.sh)
-
 # 3 - Dependences
 dep_prefix="https://github.com/tdautreme/"
 dep_suffix="-Lib_by_Undefined"
@@ -92,7 +85,7 @@ for dep in "${dependences[@]}"; do
             error_print "Can't chmod dependence"
         fi
         success_print "Dependence was chmoded"
-        if !(bash "$actual_folder/setup.sh" 1); then
+        if !(bash "$actual_folder/setup.sh" 777); then
             printf "    "
             error_print "Can't install dependence $git_clone_link"
         fi
