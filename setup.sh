@@ -141,7 +141,7 @@ if [[ $dep_recursive ]] ; then
     if !(cp res/include/* $ud_lib_path/include/); then
         error_print "Copy headers files to $ud_lib_path/include/ failed"
     fi
-    if !(make -C $actual_folde LIBNAME="libud_$name.a" DEPNAME="$make_dep_name"); then
+    if !(make -C $actual_folder LIBNAME="libud_$name.a" DEPNAME="$make_dep_name"); then
         error_print "Compilation failed"
     fi
     if !(cp *.a $ud_lib_path/lib/); then
