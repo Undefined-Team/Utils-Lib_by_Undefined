@@ -102,6 +102,8 @@ for dep in "${dependences[@]}"; do
 done
 echo "wtf"
 
+printf "\n\n\n"
+
 # 4 - Install
 cp res/include/* $ud_lib_path/include/
 make
