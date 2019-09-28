@@ -36,7 +36,9 @@ $(NAME): $(BIN)
 
 $(BIN_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir -p $(BIN_PATH) || true
+	@echo -n "\t$(G)Success: "
 	$(COMPILE) $^ -o $@ $(DEPNAME) -c
+	@echo -n "$(N)"
 
 clean:
 	@rm -f $(BIN)
