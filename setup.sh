@@ -50,7 +50,7 @@ function info_print {
 }
 
 # 1 - Set up path in env var
-if [[ $dep_recursive ]] ; then
+if $dep_recursive ; then
     info_print "\nCheck if need create main lib env path"
 fi
 new_path_array=("$ud_lib_path/lib" "$ud_lib_path/include")
