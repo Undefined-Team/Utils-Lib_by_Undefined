@@ -72,6 +72,7 @@ done
 #     echo not work
 # fi
 # echo $(./error.sh)
+echo "START"
 
 # 3 - Dependences
 dep_prefix="https://github.com/tdautreme/"
