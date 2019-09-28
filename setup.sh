@@ -28,6 +28,7 @@ function info_print {
 }
 
 # 1 - Set up path in env var
+echo "START"
 echo ""
 new_path_array=("$ud_lib_path/lib" "$ud_lib_path/include")
 path_name_array=("LD_LIBRARY_PATH" "C_INCLUDE_PATH")
@@ -97,6 +98,7 @@ for dep in "${dependences[@]}"; do
         success_print "Dependence was installed"
     fi
 done
+echo ""
 
 # 4 - Install
 cp res/include/* $ud_lib_path/include/
