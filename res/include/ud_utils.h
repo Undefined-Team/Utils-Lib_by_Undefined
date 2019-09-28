@@ -3,6 +3,8 @@
 
 // Lib
 #include <stdlib.h>
+#include <stdio.h>
+#include <sys/time.h>
 
 // Macro
 # define UD_UT_PRINT_SPACE		    "    "
