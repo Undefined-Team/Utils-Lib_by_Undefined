@@ -28,8 +28,9 @@ function info_print {
 }
 
 # 1 - Set up path in env var
-echo "START"
-echo ""
+if [ -z "$1" ] ; then
+    echo ""
+fi
 new_path_array=("$ud_lib_path/lib" "$ud_lib_path/include")
 path_name_array=("LD_LIBRARY_PATH" "C_INCLUDE_PATH")
 path_array=("$LD_LIBRARY_PATH" "$C_INCLUDE_PATH")
@@ -53,7 +54,6 @@ for i in "${!new_path_array[@]}"; do
         fi
     fi
 done
-echo "START"
 
 # 2 - Create folder
 lib_folder_array=("${ud_lib_path}" "${ud_lib_path}/lib" "${ud_lib_path}/include" "${ud_lib_path}/clone")
@@ -72,7 +72,6 @@ done
 #     echo not work
 # fi
 # echo $(./error.sh)
-echo "START"
 
 # 3 - Dependences
 dep_prefix="https://github.com/tdautreme/"
@@ -94,15 +93,15 @@ for dep in "${dependences[@]}"; do
         fi
         success_print "Dependence was chmoded"
         printf "    "
-        if !(bash "$actual_folder/setup.sh"); then
+        if !(bash "$actual_folder/setup.sh 1"); then
             error_print "Can't install dependence $git_clone_link"
         fi
         success_print "Dependence was installed"
     fi
 done
-echo "wtf"
+# echo "wtf1"
 
-printf "\n\n\n"
+# printf "\n\n\n"
 
 # 4 - Install
 cp res/include/* $ud_lib_path/include/
