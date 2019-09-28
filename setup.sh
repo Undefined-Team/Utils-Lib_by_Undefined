@@ -93,7 +93,7 @@ for dep in "${dependences[@]}"; do
         fi
         success_print "Dependence was chmoded"
         printf "    "
-        if !(bash "$actual_folder/setup.sh 1"); then
+        if !(bash "$actual_folder/setup.sh" 1); then
             error_print "Can't install dependence $git_clone_link"
         fi
         success_print "Dependence was installed"
