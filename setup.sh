@@ -98,7 +98,7 @@ for dep in "${dependences[@]}"; do
         success_print "Dependence was installed"
     fi
 done
-echo ""
+echo "wtf
 
 # 4 - Install
 cp res/include/* $ud_lib_path/include/
