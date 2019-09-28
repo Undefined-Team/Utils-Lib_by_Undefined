@@ -53,6 +53,7 @@ for i in "${!new_path_array[@]}"; do
         fi
     fi
 done
+echo "START"
 
 # 2 - Create folder
 lib_folder_array=("${ud_lib_path}" "${ud_lib_path}/lib" "${ud_lib_path}/include" "${ud_lib_path}/clone")
