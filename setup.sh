@@ -31,6 +31,7 @@ function info_print {
 if [ -z "$1" ] ; then
     echo ""
 fi
+echo wsh
 new_path_array=("$ud_lib_path/lib" "$ud_lib_path/include")
 path_name_array=("LD_LIBRARY_PATH" "C_INCLUDE_PATH")
 path_array=("$LD_LIBRARY_PATH" "$C_INCLUDE_PATH")
@@ -92,26 +93,24 @@ for dep in "${dependences[@]}"; do
             error_print "Can't chmod dependence"
         fi
         success_print "Dependence was chmoded"
-        printf "    "
         if !(bash "$actual_folder/setup.sh" 1); then
+            printf "    "
             error_print "Can't install dependence $git_clone_link"
         fi
+        printf "    "
         success_print "Dependence was installed"
     fi
 done
-# echo "wtf1"
-
-# printf "\n\n\n"
 
 # 4 - Install
 if [ -z "$1" ] ; then
+    info_print "\nStart compiling"
     cp res/include/* $ud_lib_path/include/
     make
     cp *.a $ud_lib_path/lib/
     exec bash
 else
     cp $actual_folder/res/include/* $ud_lib_path/include/
-    # make -C $actual_folder
     make -C $actual_folder > /dev/null 2>&1
     cp $actual_folder/*.a $ud_lib_path/lib/
 fi
