@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Use setup.sh
-# chmod +x setup.sh
-# ./setup.sh
+# How to use setup.sh ?
+# 1 chmod +x setup.sh
+# 2 ./setup.sh
 
 ud_lib_path="$HOME/ud_lib"
 
