@@ -16,7 +16,6 @@ name="utils"
 # Set project git hub dependences here like this (only repos with same structure work):
 # dependences+=("link='https://github.com/tdautreme/Utils-Lib_by_Undefined' && name='utils'")
 dependences=()
-dependences+=("link='https://github.com/tdautreme/Utils-Lib_by_Undefined' && name='utils'")
 
 # ------------------------------------------------------------- #
 

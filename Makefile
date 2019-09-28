@@ -20,9 +20,7 @@ COMPILE           =     $(CC) $(FLAGS) $(INCLUDE)
 .PHONY            =     all clean fclean re
 
 # Colors
-R                 =     \033[0;31m
 G                 =     \033[1;32m
-B                 =     \033[0;34m
 N                 =     \33[0m
 # Colors
 
@@ -44,6 +42,6 @@ clean:
 	@rm -f $(BIN)
 
 fclean: clean
-	@rm -f lib$(NAME).a
+	@rm -f libud*.a
 
 re: fclean all
