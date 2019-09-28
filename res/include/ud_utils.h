@@ -22,7 +22,6 @@
 # define UD_UT_COLOR_4              "\x1b[38;2;255;127;17m"
 # define UD_UT_COLOR_5              "\x1b[38;2;255;1;251m"
 
-# define ud_ut_malloc(x)            ud_ut_dast_malloc(x)
 # define ud_ut_free(x)              ud_ut_free_ctr((void**)&(x))
 # define UD_UT_PROT_MALLOC(x)       if (!(x)) {return NULL;}
 # define UD_UT_PROT_ARR_TYPE(x, y)  if (x != y) {return NULL;}
@@ -47,8 +46,8 @@ typedef enum                        {false,true} bool;
 
 // Prototypes
 void	                            ud_ut_free_ctr(void **ap);
-double                              ud_ut_dast_update_time(void);
-void                                *ud_ut_dast_malloc(size_t len);
+double                              ud_ut_update_time(void);
+void                                *ud_ut_malloc(size_t len);
 
 extern char                         *ud_ut_color_t[];
 
