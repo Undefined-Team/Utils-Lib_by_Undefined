@@ -6,18 +6,19 @@
 # 1 chmod +x setup.sh
 # 2 ./setup.sh
 
-name="utils"
+# Set the folder path where all lib are
+ud_lib_path="$HOME/ud_lib"
 
-dependences=()
+# Set the target name of the project
+# The source folder in lib folder will have this name. The compiled file name of the project will be lib_ud"NAME".a
+name="utils"
 
 # Set projet git hub dependences here like this (only repos with same structure work):
 # dependences+="https://github.com/tdautreme/Utils-Lib_by_Undefined"
-
+dependences=()
 dependences+=("link='https://github.com/tdautreme/Utils-Lib_by_Undefined' && name='utils'")
 
 # ------------------------------------------------------------- #
-
-ud_lib_path="$HOME/ud_lib"
 
 # 0 - Functions
 BLUE='\033[1;34m'
@@ -41,9 +42,6 @@ function info_print {
 }
 
 # 1 - Set up path in env var
-# if [ ( ! -z "$1" -a $1 != 777 ) -o -z "$1" ] ; then
-# if [[ 1 == 1 || 1 == 1 ]] ; then
-# if [ (! -z "$1" && $1 == 777) || (-z "$1") ] ; then
 if [ ! -z "$1" ] && [ $1 != "777" ] || [ -z "$1" ] ; then
     echo ""
 fi
