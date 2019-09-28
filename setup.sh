@@ -27,13 +27,11 @@ NC='\033[0m'
 
 
 if [ ! -z "$1" ] && [ $1 != "dep_recursive" ] || [ -z "$1" ] ; then
-    dep_recursive=1 
-else
     dep_recursive=0
+else
+    dep_recursive=1
     location=$2
 fi
-
-echo "TAMER $1 $dep_recursive"
 
 function error_print {
     printf "$RED"
@@ -51,7 +49,7 @@ function info_print {
 }
 
 # 1 - Set up path in env var
-if [[ $dep_recursive == 1 ]] ; then
+if [[ $dep_recursive == 0 ]] ; then
     info_print "\nCheck if need create main lib env path"
 fi
 new_path_array=("$ud_lib_path/lib" "$ud_lib_path/include")
@@ -79,13 +77,13 @@ for i in "${!new_path_array[@]}"; do
         fi
     fi
 done
-if [[ $dep_recursive == 1 ]] ; then
+if [[ $dep_recursive == 0 ]] ; then
     printf "\t"
     success_print "All done"
 fi
 
 # 2 - Create folder
-if [[ $dep_recursive == 1 ]] ; then
+if [[ $dep_recursive == 0 ]] ; then
     info_print "\nCheck if need create main lib folder"
 fi
 lib_folder_array=("${ud_lib_path}" "${ud_lib_path}/lib" "${ud_lib_path}/include" "${ud_lib_path}/clone")
@@ -99,13 +97,13 @@ for lib_folder in "${lib_folder_array[@]}"; do
         success_print "$lib_folder folder created"
     fi
 done
-if [[ $dep_recursive == 1 ]] ; then
+if [[ $dep_recursive == 0 ]] ; then
     printf "\t"
     success_print "All done"
 fi
 
 # 3 - Dependences
-if [[ $dep_recursive == 1 ]] ; then
+if [[ $dep_recursive == 0 ]] ; then
     info_print "\nCheck if need install dependences"
 fi
 make_dep_name=""
@@ -134,13 +132,13 @@ for dep in "${dependences[@]}"; do
     actual_dep_name=$(cat $actual_folder/setup.sh | grep -m1 name= | cut -d'=' -f 2)
     make_dep_name="$make_dep_name -lud_${actual_dep_name//'"'}"
 done
-if [[ $dep_recursive == 1 ]] ; then
+if [[ $dep_recursive == 0 ]] ; then
     printf "\t"
     success_print "All done"
 fi
 
 # 4 - Install
-if [[ $dep_recursive == 1 ]] ; then
+if [[ $dep_recursive == 0 ]] ; then
     info_print "\nStart compiling"
     if !(cp res/include/* $ud_lib_path/include/); then
         error_print "Copy headers files to $ud_lib_path/include/ failed"
