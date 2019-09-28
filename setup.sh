@@ -44,7 +44,7 @@ function info_print {
 # if [ ( ! -z "$1" -a $1 != 777 ) -o -z "$1" ] ; then
 # if [[ 1 == 1 || 1 == 1 ]] ; then
 # if [ (! -z "$1" && $1 == 777) || (-z "$1") ] ; then
-if [ ! -z "$1" ] && [ $1 == 777 ] || [ -z "$1" ] ; then
+if [ ! -z "$1" ] && [ $1 != "777" ] || [ -z "$1" ] ; then
     echo ""
 fi
 new_path_array=("$ud_lib_path/lib" "$ud_lib_path/include")
@@ -111,7 +111,7 @@ for dep in "${dependences[@]}"; do
 done
 
 # 4 - Install
-if [ ! -z "$1" ] && [ $1 == 777 ] || [ -z "$1" ] ; then
+if [ ! -z "$1" ] && [ $1 != "777" ] || [ -z "$1" ] ; then
     info_print "\nStart compiling"
     if !(cp res/include/* $ud_lib_path/include/); then
         error_print "Copy headers files to $ud_lib_path/include/ failed"
