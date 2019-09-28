@@ -11,7 +11,7 @@ ud_lib_path="$HOME/ud_lib"
 
 # Set the target name of the project
 # The source folder in lib folder will have this name. The compiled file name of the project will be lib_ud"NAME".a
-name="utils"
+target_name="utils"
 
 # Set project git hub dependences here like this (only repos with same structure work):
 # dependences+=("link='https://github.com/tdautreme/Utils-Lib_by_Undefined' && name='utils'")
@@ -143,20 +143,21 @@ if [[ $dep_recursive == 0 ]] ; then
     if !(cp res/include/* $ud_lib_path/include/); then
         error_print "Copy headers files to $ud_lib_path/include/ failed"
     fi
-    if !(make LIBNAME="libud_$name.a" DEPNAME="$make_dep_name"); then
+    if !(make LIBNAME="libud_$target_name.a" DEPNAME="$make_dep_name"); then
         error_print "Compilation failed"
     fi
     if !(cp *.a $ud_lib_path/lib/); then
         error_print "Copy compiled files to $ud_lib_path/lib/ failed"
     fi
-    printf "\n"
+    printf "\t"
+    success_print "All done\n"
     success_print "Install completed. Shell restarting...\n"
     exec bash
 else
     if !(cp $location/res/include/* $ud_lib_path/include/); then
         error_print "Copy headers files from $location/res/include/ to $ud_lib_path/include/ failed"
     fi
-    if !(make -C $location LIBNAME="libud_$name.a" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
+    if !(make -C $location LIBNAME="libud_$target_name.a" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
         error_print "Compilation failed"
     fi
     if !(cp $location/*.a $ud_lib_path/lib/); then
