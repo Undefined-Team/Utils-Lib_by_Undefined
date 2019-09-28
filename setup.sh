@@ -155,13 +155,13 @@ if [[ $dep_recursive == 1 ]] ; then
     exec bash
 else
     if !(cp $actual_folder/res/include/* $ud_lib_path/include/); then
-        error_print "Copy headers files to $ud_lib_path/include/ failed"
+        error_print "Copy headers files from $actual_folder/res/include/ to $ud_lib_path/include/ failed"
     fi
     if !(make -C $actual_folder LIBNAME="libud_$name.a" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
         error_print "Compilation failed"
     fi
     if !(cp $actual_folder/*.a $ud_lib_path/lib/); then
-        error_print "Copy compiled files to $ud_lib_path/lib/ failed"
+        error_print "Copy compiled files from $actual_folder/ to $ud_lib_path/lib/ failed"
     fi
 fi
 exit 0
