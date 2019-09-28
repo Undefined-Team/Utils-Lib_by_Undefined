@@ -53,9 +53,9 @@ if [[ $dep_recursive == 0 ]] ; then
     info_print "\nCheck if need create main lib env path"
 fi
 new_path_array=("$ud_lib_path/lib" "$ud_lib_path/include")
-path_name_array=("LD_LIBRARY_PATH" "C_INCLUDE_PATH")
-path_array=("$LD_LIBRARY_PATH" "$C_INCLUDE_PATH")
-path_var_array=(LD_LIBRARY_PATH C_INCLUDE_PATH)
+path_name_array=("LIBRARY_PATH" "C_INCLUDE_PATH")
+path_array=("$LIBRARY_PATH" "$C_INCLUDE_PATH")
+path_var_array=(LIBRARY_PATH C_INCLUDE_PATH)
 bashrc_path="$HOME/.bashrc"
 for i in "${!new_path_array[@]}"; do 
     # Set env var in current shell
