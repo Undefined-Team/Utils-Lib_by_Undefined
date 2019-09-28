@@ -8,11 +8,10 @@
 
 dependences=()
 
-# Set projet git hub dependences here like this:
-# If your dependence github link is https://github.com/tdautreme/Memory-Lib_by_Undefined then just use Memory
-# dependences+="Memory"
+# Set projet git hub dependences here like this (only repos with same structure work):
+# dependences+="https://github.com/tdautreme/Memory-Lib_by_Undefined"
 
-dependences+="Utils"
+dependences+="https://github.com/tdautreme/Utils-Lib_by_Undefined"
 
 # -------------------------------------------------------------
 
@@ -79,15 +78,12 @@ for lib_folder in "${lib_folder_array[@]}"; do
 done
 
 # 3 - Dependences
-dep_prefix="https://github.com/tdautreme/"
-dep_suffix="-Lib_by_Undefined"
 for dep in "${dependences[@]}"; do
     actual_folder="${ud_lib_path}/clone/$dep"
-    git_clone_link="$dep_prefix$dep$dep_suffix"
     if [ ! -d "$actual_folder" ]; then
         info_print "Try install $dep dependence"
         printf "    "
-        if !(git clone $git_clone_link $actual_folder > /dev/null 2>&1) ; then
+        if !(git clone $dep $actual_folder > /dev/null 2>&1) ; then
             error_print "Can't download dependence $git_clone_link"
         fi
         success_print "Dependence was downloaded"
