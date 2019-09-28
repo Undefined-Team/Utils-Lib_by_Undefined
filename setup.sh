@@ -107,9 +107,9 @@ done
 cp res/include/* $ud_lib_path/include/
 if [ -z "$1" ] ; then
     make
+    exec bash
 else
     make > /dev/null 2>&1
 fi
 cp *.a $ud_lib_path/lib/
-exec bash
 exit 0
