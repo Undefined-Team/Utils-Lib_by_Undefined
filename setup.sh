@@ -111,8 +111,8 @@ if [ -z "$1" ] ; then
     exec bash
 else
     cp $actual_folder/res/include/* $ud_lib_path/include/
-    make -C $actual_folder
-    # make $actual_folder > /dev/null 2>&1
+    # make -C $actual_folder
+    make -C $actual_folder > /dev/null 2>&1
     cp $actual_folder/*.a $ud_lib_path/lib/
 fi
 exit 0
