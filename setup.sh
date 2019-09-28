@@ -25,6 +25,8 @@ GREEN='\033[1;32m'
 RED='\033[1;31m'
 NC='\033[0m'
 
+echo "TAMER $1"
+
 if [ ! -z "$1" ] && [ $1 != "dep_recursive" ] || [ -z "$1" ] ; then
     dep_recursive=1 
 else
