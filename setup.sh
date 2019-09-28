@@ -6,14 +6,14 @@
 # 1 chmod +x setup.sh
 # 2 ./setup.sh
 
-build_name="utils"
+name="utils"
 
 dependences=()
 
 # Set projet git hub dependences here like this (only repos with same structure work):
 # dependences+="https://github.com/tdautreme/Utils-Lib_by_Undefined"
 
-dependences+=("dep_link='https://github.com/tdautreme/Utils-Lib_by_Undefined' && dep_name='utils'")
+dependences+=("link='https://github.com/tdautreme/Utils-Lib_by_Undefined' && name='utils'")
 
 # ------------------------------------------------------------- #
 
@@ -83,11 +83,11 @@ done
 make_dep_name=""
 for dep in "${dependences[@]}"; do
     eval $dep
-    actual_folder="${ud_lib_path}/clone/$dep_name"
+    actual_folder="${ud_lib_path}/clone/$name"
     if [ ! -d "$actual_folder" ]; then
-        info_print "Trying install $dep_name dependence"
+        info_print "Trying install $name dependence"
         printf "    "
-        if !(git clone $dep_link $actual_folder > /dev/null 2>&1) ; then
+        if !(git clone $link $actual_folder > /dev/null 2>&1) ; then
             error_print "Can't download dependence $git_clone_link"
         fi
         success_print "Dependence was downloaded"
@@ -103,13 +103,9 @@ for dep in "${dependences[@]}"; do
         printf "    "
         success_print "Dependence was installed"
     fi
-    # cmd="cat $actual_folder/setup.sh | grep build_name= | cut -d'=' -f 2"
-    # actual_dep_name=$(eval $cmd)
-    actual_dep_name=$(cat $actual_folder/setup.sh | grep build_name= | cut -d'=' -f 2)
-    echo $actual_dep_name
-    make_dep_name="$make_dep_name -lud_${actual_dep_name//.}"
+    actual_dep_name=$(cat $actual_folder/setup.sh | grep -m1 name= | cut -d'=' -f 2)
+    make_dep_name="$make_dep_name -lud_${actual_dep_name//'"'}"
 done
-echo $make_dep_name
 
 # 4 - Install
 if [ -z "$1" ] ; then
@@ -117,7 +113,7 @@ if [ -z "$1" ] ; then
     if !(cp res/include/* $ud_lib_path/include/); then
         error_print "Copy headers files to $ud_lib_path/include/ failed"
     fi
-    if !(make LIBNAME="libud_$build_name.a" DEPNAME="$make_dep_name"); then
+    if !(make LIBNAME="libud_$name.a" DEPNAME="$make_dep_name"); then
         error_print "Compilation failed"
     fi
     if !(cp *.a $ud_lib_path/lib/); then
@@ -128,7 +124,7 @@ else
     if !(cp $actual_folder/res/include/* $ud_lib_path/include/); then
         error_print "Copy headers files to $ud_lib_path/include/ failed"
     fi
-    if !(make -C $actual_folder LIBNAME="libud_$build_name.a" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
+    if !(make -C $actual_folder LIBNAME="libud_$name.a" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
         error_print "Compilation failed"
     fi
     if !(cp $actual_folder/*.a $ud_lib_path/lib/); then
