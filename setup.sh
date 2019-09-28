@@ -103,11 +103,13 @@ for dep in "${dependences[@]}"; do
         printf "    "
         success_print "Dependence was installed"
     fi
-    actual_dep_name=$("cat $actual_folder/setup.sh | grep build_name= | cut -d'=' -f 2")
+    # cmd="cat $actual_folder/setup.sh | grep build_name= | cut -d'=' -f 2"
+    # actual_dep_name=$(eval $cmd)
+    actual_dep_name=$(cat $actual_folder/setup.sh | grep build_name= | cut -d'=' -f 2)
+    echo $actual_dep_name
     make_dep_name="$make_dep_name -lud_${actual_dep_name//.}"
 done
-
-echo $actual_dep_name
+echo $make_dep_name
 
 # 4 - Install
 if [ -z "$1" ] ; then
