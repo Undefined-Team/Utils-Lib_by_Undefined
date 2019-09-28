@@ -42,7 +42,7 @@ function info_print {
 }
 
 # 1 - Set up path in env var
-if [ ! -z "$1" ] && [ $1 != "777" ] || [ -z "$1" ] ; then
+if [ ! -z "$1" ] && [ $1 != "dep_recursive" ] || [ -z "$1" ] ; then
     echo ""
 fi
 new_path_array=("$ud_lib_path/lib" "$ud_lib_path/include")
@@ -97,7 +97,7 @@ for dep in "${dependences[@]}"; do
             error_print "Can't chmod dependence"
         fi
         success_print "Dependence was chmoded"
-        if !(bash "$actual_folder/setup.sh" 777); then
+        if !(bash "$actual_folder/setup.sh" dep_recursive); then
             printf "    "
             error_print "Can't install dependence $git_clone_link"
         fi
@@ -109,7 +109,7 @@ for dep in "${dependences[@]}"; do
 done
 
 # 4 - Install
-if [ ! -z "$1" ] && [ $1 != "777" ] || [ -z "$1" ] ; then
+if [ ! -z "$1" ] && [ $1 != "dep_recursive" ] || [ -z "$1" ] ; then
     info_print "\nStart compiling"
     if !(cp res/include/* $ud_lib_path/include/); then
         error_print "Copy headers files to $ud_lib_path/include/ failed"
