@@ -112,7 +112,7 @@ for dep in "${dependences[@]}"; do
         info_print "--> Trying install [ $name ] dependence"
         printf "\t"
         if !(git clone $link $actual_folder > /dev/null 2>&1) ; then
-            error_print "Can't download dependence $git_clone_link"
+            error_print "Can't download dependence $name <-> $link"
         fi
         success_print "Dependence was downloaded"
         printf "\t"
@@ -120,9 +120,9 @@ for dep in "${dependences[@]}"; do
             error_print "Can't chmod dependence"
         fi
         success_print "Dependence was chmoded"
-        if !(bash "$actual_folder/setup.sh" dep_recursive); then
+        if !(bash "$actual_folder/setup.sh" "dep_recursive"); then
             printf "\t"
-            error_print "Can't install dependence $git_clone_link"
+            error_print "Can't install dependence $name <-> $link"
         fi
         printf "\t"
         success_print "Dependence was installed"
