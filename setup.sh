@@ -50,7 +50,7 @@ bashrc_path="$HOME/.bashrc"
 for i in "${!new_path_array[@]}"; do 
     # Set env var in current shell
     if [[ ! $(env) == *"${new_path_array[$i]}"* ]]; then
-        cmd="export ${path_array[$i]}='${new_path_array[$i]}:${path_array[$i]}'"
+        cmd="export ${path_var_array[$i]}='${new_path_array[$i]}:${path_array[$i]}'"
         eval $cmd
         if [[ ! $(sh -c env) == *"${new_path_array[$i]}"* ]]; then
             error_print "Can't add ${new_path_array[$i]} in ${path_name_array[$i]}"
