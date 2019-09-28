@@ -104,12 +104,14 @@ done
 # printf "\n\n\n"
 
 # 4 - Install
-cp res/include/* $ud_lib_path/include/
 if [ -z "$1" ] ; then
+    cp res/include/* $ud_lib_path/include/
     make
+    cp *.a $ud_lib_path/lib/
     exec bash
 else
-    make > /dev/null 2>&1
+    cp $actual_folder/res/include/* $ud_lib_path/include/
+    make $actual_folder > /dev/null 2>&1
+    cp $actual_folder/*.a $ud_lib_path/lib/
 fi
-cp *.a $ud_lib_path/lib/
 exit 0
