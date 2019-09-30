@@ -44,6 +44,13 @@ function info_print {
     printf "$BLUE$2$1$NC\n"
 }
 
+function trim {
+    local var="$*"
+    var="${var#"${var%%[![:space:]]*}"}"
+    var="${var%"${var##*[![:space:]]}"}"   
+    echo -n "$var"
+}
+
 # 1 - Check update
 ! $dep_recursive && { info_print "\n (1) Check if need update"; }
 if [[ $(git pull) != "Already up to date." ]] > /dev/null 2>&1 ; then
@@ -58,16 +65,19 @@ i=0
 [ ! -f "$conf_path" ] && { error_print "Configuration file not found" "\t"; }
 while IFS=, read -r col1 col2
 do
-    col2=${col2//[$'\t\r\n ']}
+    col1=${col1//[$'\t\r\n"']}
+    col2=${col2//[$'\t\r\n"']}
+    col1=$(trim "$col1")
+    col2=$(trim "$col2")
     # Get name and main lib folder path of the project
     if [ $i == 0 ] ; then
-        target_name=$col1
-        eval "ud_lib_path=$col2"
+        target_name="$col1"
+        eval "ud_lib_path=\"$col2\""
         i=1
         ! $dep_recursive && { success_print "Set target lib name to  [ $col1 ] and main lib path to [ $ud_lib_path ]" "\t"; }
     # Get dependencies
     else
-        dependencies+=("link=$col1 && name=$col2")
+        dependencies+=("link='$col1' && name='$col2'")
         ! $dep_recursive && { success_print "Found dependency [ $col2 ] with git link [ $col1 ]" "\t"; }
     fi
 done < "$conf_path"
@@ -105,7 +115,7 @@ if ! $dep_recursive ; then
             if [[ ! $(sh -c env) == *"${new_path_array[$i]}"* ]]; then
                 error_print "Can't add [ ${new_path_array[$i]} ] in [ ${path_name_array[$i]} ]" "\t"
             fi
-            success_print "Env var [ ${path_name_array[$i]} ] now contains [ ${new_path_array[$i]} ]"
+            success_print "Env var [ ${path_name_array[$i]} ] now contains [ ${new_path_array[$i]} ]" "\t"
         fi
         # Set env var in bashrc
         if [[ ! $(cat $bashrc_path) == *"${new_path_array[$i]}"* ]]; then
@@ -134,13 +144,13 @@ fi
 make_dep_name=""
 make_ar_name=""
 for dep in "${dependencies[@]}"; do
-    eval $dep
+    eval "$dep"
     actual_folder="${ud_lib_path}/clone/$name"
     # Check if dependency need to be installed
     if [ ! -d "$actual_folder" ]; then
         # Download dependency
         info_print "[ $name ] dependency need to be installed" "\t"
-        if !(git clone $link $actual_folder > /dev/null 2>&1) ; then
+        if !(git clone "$link" "$actual_folder" > /dev/null 2>&1) ; then
             error_print "Can't download dependency [ $name ] <-> [ $link ]" "\t"
         fi
         success_print "Dependency was downloaded" "\t"
@@ -155,7 +165,7 @@ for dep in "${dependencies[@]}"; do
         fi
         success_print "Dependency was installed" "\t"
     # Check if dependency need to be Updated
-    elif [[ $(git -C $actual_folder pull) != "Already up to date." ]] > /dev/null 2>&1 ; then
+    elif [[ $(git -C "$actual_folder" pull) != "Already up to date." ]] > /dev/null 2>&1 ; then
         # Update dependency
         info_print "[ $name ] dependency need to be updated" "\t"
         if !(bash "$actual_folder/setup.sh" "dep_recursive" $actual_folder "fclean"); then
