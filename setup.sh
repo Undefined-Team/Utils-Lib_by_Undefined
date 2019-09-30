@@ -27,6 +27,7 @@ else
     dep_recursive=true
     location="$2"
 fi
+echo $location
 conf_path="$location/$conf_path"
 echo $conf_path
 
@@ -161,7 +162,7 @@ for dep in "${dependencies[@]}"; do
         fi
         success_print "Dependency was chmoded" "\t"
         # Install dependency
-        if !(bash "$actual_folder/setup.sh" "dep_recursive" $actual_folder); then
+        if !(bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder"); then
             error_print "Can't install dependency [ $name ] <-> [ $link ]" "\t"
         fi
         success_print "Dependency was installed" "\t"
@@ -169,7 +170,7 @@ for dep in "${dependencies[@]}"; do
     elif [[ $(git -C "$actual_folder" pull) != "Already up to date." ]] > /dev/null 2>&1 ; then
         # Update dependency
         info_print "[ $name ] dependency need to be updated" "\t"
-        if !(bash "$actual_folder/setup.sh" "dep_recursive" $actual_folder "fclean"); then
+        if !(bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder" "fclean"); then
             error_print "Can't update dependency [ $name ] <-> [ $link ]" "\t"
         fi
         success_print "Dependency was updated" "\t"
