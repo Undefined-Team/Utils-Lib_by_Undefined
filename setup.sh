@@ -164,7 +164,8 @@ if ! $dep_recursive ; then
     if !(cp res/include/* $ud_lib_path/include/); then
         error_print "Copy headers files to $ud_lib_path/include/ failed"
     fi
-    if !(make LIBNAME="libud_$target_name.a" DEPNAME="$make_dep_name"); then
+    # if !(make LIBNAME="libud_$target_name.a" DEPNAME="$make_dep_name"); then
+    if !(make static LIBNAME="libud_$target_name.a" DEPNAME="$make_dep_name"); then
         error_print "Compilation failed"
     fi
     if !(cp *.a $ud_lib_path/lib/); then
@@ -178,7 +179,7 @@ else
         error_print "Copy headers files from $location/res/include/ to $ud_lib_path/include/ failed"
     fi
     # if !(make static -C $location LIBNAME="libud_$target_name.a" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
-    if !(make static -C $location LIBNAME="libud_$target_name.a" DEPNAME="$make_dep_name"); then
+    if !(make -C $location LIBNAME="libud_$target_name.a" DEPNAME="$make_dep_name"); then
         error_print "Compilation failed"
     fi
     if !(cp $location/*.a $ud_lib_path/lib/); then
