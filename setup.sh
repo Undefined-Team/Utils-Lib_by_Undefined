@@ -28,6 +28,7 @@ else
     location="$2"
 fi
 conf_path="$location/$conf_path"
+has_set_env=false
 
 function error_print {
     printf "$RED"
@@ -112,6 +113,7 @@ if ! $dep_recursive ; then
     for i in "${!new_path_array[@]}"; do 
         # Set env var in current shell
         if [[ ! $(env) == *"${new_path_array[$i]}"* ]]; then
+            has_set_env=true
             cmd="export ${path_var_array[$i]}='${new_path_array[$i]}:${path_array[$i]}'"
             eval $cmd
             if [[ ! $(sh -c env) == *"${new_path_array[$i]}"* ]]; then
@@ -121,6 +123,7 @@ if ! $dep_recursive ; then
         fi
         # Set env var in bashrc
         if [[ ! $(cat $bashrc_path) == *"${new_path_array[$i]}"* ]]; then
+            has_set_env=true
             echo "export ${path_name_array[$i]}='${new_path_array[$i]}:${path_array[$i]}'" >> $bashrc_path
             if [[ ! $(cat $bashrc_path) == *"${new_path_array[$i]}"* ]]; then
                 error_print "Can't add export command of [ ${new_path_array[$i]} ] in [ ${path_name_array[$i]} ] in bashrc file" "\t"
@@ -190,7 +193,7 @@ if ! $dep_recursive ; then
         error_print "Copy headers files to [ $ud_lib_path/include/ ] failed"
     fi
     # Compil
-    if [[ ${#dependencies[@]} ]] ; then
+    if [[ ${#dependencies[@]} == 0 ]] ; then
         if !(make -C "$location" --no-print-directory LIBNAME="$target_name" DEPNAME="$make_dep_name"); then
             error_print "Compilation failed"
         fi 
@@ -202,8 +205,12 @@ if ! $dep_recursive ; then
         error_print "Copy compiled files to [ $ud_lib_path/lib/ ] failed"
     fi
     success_print "All done\n" "\t"
-    success_print "Install completed. Shell restarting...\n"
-    exec $SHELL
+    success_print "Install completed."
+    if $has_set_env ; then
+        success_print "Shell restarting...\n"
+        exec $SHELL
+    fi
+    printf "\n"
 else
     # Copy headers in main lib folder
     if !(cp "$location"/res/include/* "$ud_lib_path"/include/); then
