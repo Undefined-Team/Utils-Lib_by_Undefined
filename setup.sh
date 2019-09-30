@@ -12,9 +12,9 @@
 
 # ------------------------------------------------------------- #
 
-# 0 - Utils
 conf_path="conf.csv"
 
+# 0 - Utils
 BLUE='\033[1;34m'
 GREEN='\033[1;32m'
 RED='\033[1;31m'
@@ -25,6 +25,7 @@ if [ ! -z "$1" ] && [ $1 != "dep_recursive" ] || [ -z "$1" ] ; then
 else
     dep_recursive=true
     location=$2
+    conf_path="$location/$conf_path"
 fi
 
 function error_print {
@@ -66,63 +67,69 @@ do
 done < $conf_path
 ! $dep_recursive && { success_print "All done" "\t"; }
 
-# 2 - Preprocessing
-! $dep_recursive && { info_print "\nPreprocessing"; }
-for pparam in "$@"
-do
-    if [[ $pparam == "fclean" ]] ; then
-        if !(make fclean > /dev/null 2>&1) ; then
-            error_print "Can't make fclean in current folder" "\t"
+if ! $dep_recursive ; then
+    # 2 - Preprocessing
+    # ! $dep_recursive && { info_print "\nPreprocessing"; }
+    info_print "\nPreprocessing";
+    for pparam in "$@"
+    do
+        if [[ $pparam == "fclean" ]] ; then
+            if !(make fclean > /dev/null 2>&1) ; then
+                error_print "Can't make fclean in current folder" "\t"
+            fi
+            success_print "Make fclean in current folder" "\t"
+        elif [[ $pparam == "libclean" ]] ; then
+            if !(rm -rf $ud_lib_path) ; then
+                error_print "Can't remove main lib folder" "\t"
+            fi
+            success_print "Main lib folder removed" "\t"
         fi
-        success_print "Make fclean in current folder" "\t"
-    elif [[ $pparam == "libclean" ]] ; then
-        if !(rm -rf $ud_lib_path) ; then
-            error_print "Can't remove main lib folder" "\t"
-        fi
-        success_print "Main lib folder removed" "\t"
-    fi
-done
+    done
 
-# 3 - Set up path in env var
-! $dep_recursive && { info_print "\nCheck if need create main lib env path"; }
-new_path_array=("$ud_lib_path/lib" "$ud_lib_path/include")
-path_name_array=("LIBRARY_PATH" "C_INCLUDE_PATH")
-path_array=("$LIBRARY_PATH" "$C_INCLUDE_PATH")
-path_var_array=(LIBRARY_PATH C_INCLUDE_PATH)
-bashrc_path="$HOME/.bashrc"
-for i in "${!new_path_array[@]}"; do 
-    # Set env var in current shell
-    if [[ ! $(env) == *"${new_path_array[$i]}"* ]]; then
-        cmd="export ${path_var_array[$i]}='${new_path_array[$i]}:${path_array[$i]}'"
-        eval $cmd
-        if [[ ! $(sh -c env) == *"${new_path_array[$i]}"* ]]; then
-            error_print "Can't add ${new_path_array[$i]} in ${path_name_array[$i]}" "\t"
+    # 3 - Set up path in env var
+    # ! $dep_recursive && { info_print "\nCheck if need create main lib env path"; }
+    info_print "\nCheck if need create main lib env path";
+    new_path_array=("$ud_lib_path/lib" "$ud_lib_path/include")
+    path_name_array=("LIBRARY_PATH" "C_INCLUDE_PATH")
+    path_array=("$LIBRARY_PATH" "$C_INCLUDE_PATH")
+    path_var_array=(LIBRARY_PATH C_INCLUDE_PATH)
+    bashrc_path="$HOME/.bashrc"
+    for i in "${!new_path_array[@]}"; do 
+        # Set env var in current shell
+        if [[ ! $(env) == *"${new_path_array[$i]}"* ]]; then
+            cmd="export ${path_var_array[$i]}='${new_path_array[$i]}:${path_array[$i]}'"
+            eval $cmd
+            if [[ ! $(sh -c env) == *"${new_path_array[$i]}"* ]]; then
+                error_print "Can't add ${new_path_array[$i]} in ${path_name_array[$i]}" "\t"
+            fi
+            success_print "Env var ${path_name_array[$i]} now contains ${new_path_array[$i]}."
         fi
-        success_print "Env var ${path_name_array[$i]} now contains ${new_path_array[$i]}."
-    fi
-    # Set env var in bashrc
-    if [[ ! $(cat $bashrc_path) == *"${new_path_array[$i]}"* ]]; then
-        echo "export ${path_name_array[$i]}='${new_path_array[$i]}:${path_array[$i]}'" >> $bashrc_path
+        # Set env var in bashrc
         if [[ ! $(cat $bashrc_path) == *"${new_path_array[$i]}"* ]]; then
-            error_print "Can't add export command of ${new_path_array[$i]} in ${path_name_array[$i]} in bashrc file" "\t"
+            echo "export ${path_name_array[$i]}='${new_path_array[$i]}:${path_array[$i]}'" >> $bashrc_path
+            if [[ ! $(cat $bashrc_path) == *"${new_path_array[$i]}"* ]]; then
+                error_print "Can't add export command of ${new_path_array[$i]} in ${path_name_array[$i]} in bashrc file" "\t"
+            fi
         fi
-    fi
-done
-! $dep_recursive && { success_print "All done" "\t"; }
+    done
+    # ! $dep_recursive && { success_print "All done" "\t"; }
+    success_print "All done" "\t"
 
-# 4 - Create folder
-! $dep_recursive && { info_print "\nCheck if need create main lib folder"; } 
-lib_folder_array=("${ud_lib_path}" "${ud_lib_path}/lib" "${ud_lib_path}/include" "${ud_lib_path}/clone")
-for lib_folder in "${lib_folder_array[@]}"; do
-	if [ ! -d "$lib_folder" ]; then
-        if !(mkdir $lib_folder) ; then
-            error_print "Can't create $lib_folder folder" "\t"
+    # 4 - Create folder
+    # ! $dep_recursive && { info_print "\nCheck if need create main lib folder"; }
+    info_print "\nCheck if need create main lib folder" 
+    lib_folder_array=("${ud_lib_path}" "${ud_lib_path}/lib" "${ud_lib_path}/include" "${ud_lib_path}/clone")
+    for lib_folder in "${lib_folder_array[@]}"; do
+        if [ ! -d "$lib_folder" ]; then
+            if !(mkdir $lib_folder) ; then
+                error_print "Can't create $lib_folder folder" "\t"
+            fi
+            success_print "$lib_folder folder created" "\t"
         fi
-        success_print "$lib_folder folder created" "\t"
-    fi
-done
-! $dep_recursive && { success_print "All done" "\t"; }
-
+    done
+    # ! $dep_recursive && { success_print "All done" "\t"; }
+    success_print "All done" "\t"
+fi
 
 # 5 - Dependencies
 ! $dep_recursive && { info_print "\nCheck if need install dependencies"; }
@@ -131,7 +138,7 @@ for dep in "${dependencies[@]}"; do
     eval $dep
     actual_folder="${ud_lib_path}/clone/$name"
     if [ ! -d "$actual_folder" ]; then
-        info_print "--> Trying install [ $name ] dependence"
+        info_print "--> Trying install [ $name ] dependence $location"
         if !(git clone $link $actual_folder > /dev/null 2>&1) ; then
             error_print "Can't download dependence $name <-> $link" "\t"
         fi
