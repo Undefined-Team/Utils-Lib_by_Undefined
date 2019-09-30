@@ -4,7 +4,11 @@
 
 # How to use setup.sh ?
 # 1 chmod +x setup.sh
-# 2 ./setup.sh
+# 2 ./setup.sh {parameter1} {parameter2}...
+
+# Parameter list
+# -> fclean (make fclean in current project folder before make)
+# -> libclean (remove main lib folder, then all dependencies)
 
 # ------------------------------------------------------------- #
 
@@ -62,9 +66,25 @@ do
 done < $conf_path
 ! $dep_recursive && { success_print "All done" "\t"; }
 
-# 2 - Set up path in env var
-! $dep_recursive && { info_print "\nCheck if need create main lib env path"; }
+# 2 - Preprocessing
+! $dep_recursive && { info_print "\nPreprocessing"; }
+for pparam in "$@"
+do
+    if [[ $pparam == "fclean" ]] ; then
+        if !(make fclean > /dev/null 2>&1) ; then
+            error_print "Can't make fclean in current folder" "\t"
+        fi
+        success_print "Make fclean in current folder" "\t"
+    elif [[ $pparam == "libclean" ]] ; then
+        if !(rm -rf $ud_lib_path) ; then
+            error_print "Can't remove main lib folder" "\t"
+        fi
+        success_print "Main lib folder removed" "\t"
+    fi
+done
 
+# 3 - Set up path in env var
+! $dep_recursive && { info_print "\nCheck if need create main lib env path"; }
 new_path_array=("$ud_lib_path/lib" "$ud_lib_path/include")
 path_name_array=("LIBRARY_PATH" "C_INCLUDE_PATH")
 path_array=("$LIBRARY_PATH" "$C_INCLUDE_PATH")
@@ -90,11 +110,8 @@ for i in "${!new_path_array[@]}"; do
 done
 ! $dep_recursive && { success_print "All done" "\t"; }
 
-
-# 3 - Create folder
-if ! $dep_recursive ; then
-    info_print "\nCheck if need create main lib folder"
-fi
+# 4 - Create folder
+! $dep_recursive && { info_print "\nCheck if need create main lib folder"; } 
 lib_folder_array=("${ud_lib_path}" "${ud_lib_path}/lib" "${ud_lib_path}/include" "${ud_lib_path}/clone")
 for lib_folder in "${lib_folder_array[@]}"; do
 	if [ ! -d "$lib_folder" ]; then
@@ -107,9 +124,8 @@ done
 ! $dep_recursive && { success_print "All done" "\t"; }
 
 
-# 4 - Dependencies
+# 5 - Dependencies
 ! $dep_recursive && { info_print "\nCheck if need install dependencies"; }
-
 make_dep_name=""
 for dep in "${dependencies[@]}"; do
     eval $dep
@@ -135,7 +151,7 @@ for dep in "${dependencies[@]}"; do
 done
 ! $dep_recursive && { success_print "All done" "\t"; }
 
-# 5 - Install
+# 6 - Install
 if ! $dep_recursive ; then
     info_print "\nStart compiling"
     if !(cp res/include/* $ud_lib_path/include/); then
@@ -154,8 +170,8 @@ else
     if !(cp $location/res/include/* $ud_lib_path/include/); then
         error_print "Copy headers files from $location/res/include/ to $ud_lib_path/include/ failed"
     fi
-    # if !(make -C static $location LIBNAME="libud_$target_name.a" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
-    if !(make -C $location static LIBNAME="libud_$target_name.a" DEPNAME="$make_dep_name"); then
+    if !(make -C $location static LIBNAME="libud_$target_name.a" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
+    # if !(make -C $location static LIBNAME="libud_$target_name.a" DEPNAME="$make_dep_name"); then
         error_print "Compilation failed"
     fi
     if !(cp $location/*.a $ud_lib_path/lib/); then

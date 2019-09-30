@@ -14,7 +14,6 @@ SRCS              =     $(wildcard $(SRC_PATH)*.c)
 SRC               =     $(filter-out $(SRC_BLACKLIST), $(SRCS))
 BINS              =     $(SRC:.c=.o)
 BIN               =     $(addprefix $(BIN_PATH), $(notdir $(BINS)))
-LIB_OBJ           =     $(wildcard *.o)
 
 COMPILE           =     $(CC) $(FLAGS) $(INCLUDE)
 
@@ -22,16 +21,16 @@ COMPILE           =     $(CC) $(FLAGS) $(INCLUDE)
 
 # Colors
 R                 =     \033[0;31m
-G                 =     \033[32;7m
+G                 =     \33[32;7m
 B                 =     \033[0;34m
-N                 =     \33[0m
+N                 =     \033[0m
 # Colors
 
 all: $(LIBNAME)
 
 $(LIBNAME): $(BIN)
 	@ar rc ${LIBNAME} $^
-	@echo "\n${N}Library ${LIBNAME} compiled."
+	@echo "\nLibrary ${LIBNAME} compiled."
 	@ranlib ${LIBNAME}
 	@echo "Library ${LIBNAME} indexed."
 
@@ -43,16 +42,19 @@ clean:
 	@rm -f $(BIN)
 
 fclean: clean
-	@rm -f ${LIBNAME}
+	@rm -f ${wildcard *.a}
 
 re: fclean all
 
-static:
+static: extract
+	@$(eval LIB_OBJ=$(shell echo *.o))
+	@ar rc ${LIBNAME} ${LIB_OBJ}
+	@echo "\nLibrary ${LIBNAME} compiled."
+	@ranlib ${LIBNAME}
+	@echo "Library ${LIBNAME} indexed."
+	@rm *.o
+
+extract:
 	@for dep in $(DEPNAME); do \
-		echo $${dep}; \
 		ar x $${dep}; \
 	done
-	ar rc ${LIBNAME} $(LIB_OBJ)
-	echo "\n${N}Library ${LIBNAME} compiled."
-	ranlib ${LIBNAME}
-	echo "Library ${LIBNAME} indexed."
