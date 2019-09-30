@@ -13,7 +13,7 @@ INCLUDE           =     -I$(INCLUDE_PATH)
 SRCS              =     $(wildcard $(SRC_PATH)*.c)
 SRC               =     $(filter-out $(SRC_BLACKLIST), $(SRCS))
 BINS              =     $(SRC:.c=.o)
-BIN               =     $(addprefix $(BIN_PATH), $(notdir $(BINS)))
+BIN               =     $(addprefix $(BIN_PATH), $(addprefix $(LIBNAME)_, $(notdir $(BINS))))
 
 COMPILE           =     $(CC) $(FLAGS) $(INCLUDE)
 
@@ -26,32 +26,32 @@ B                 =     \033[0;34m
 N                 =     \033[0m
 # Colors
 
-all: $(LIBNAME)
+all: libud_$(LIBNAME).a
 
-$(LIBNAME): $(BIN)
-	@ar rc ${LIBNAME} $^
-	@echo "\nLibrary ${LIBNAME} compiled."
-	@ranlib ${LIBNAME}
-	@echo "Library ${LIBNAME} indexed."
+libud_$(LIBNAME).a: $(BIN)
+	@ar rc libud_${LIBNAME}.a ${BIN}
+	@echo "\nLibrary libud_${LIBNAME}.a compiled."
+	@ranlib libud_${LIBNAME}.a
+	@echo "Library libud_${LIBNAME}.a indexed."
 
-$(BIN_PATH)%.o: $(SRC_PATH)%.c
+$(BIN_PATH)$(LIBNAME)_%.o: $(SRC_PATH)%.c
 	@mkdir -p $(BIN_PATH) || true
 	$(COMPILE) $^ -o $@ $(DEPNAME) -c
 
 clean:
-	@rm -f $(BIN)
+	@rm -f $(BIN_PATH)/*.o
 
 fclean: clean
 	@rm -f ${wildcard *.a}
 
 re: fclean all
 
-static: extract
+static: libud_${LIBNAME}.a extract
 	@$(eval LIB_OBJ=$(shell echo *.o))
-	@ar rc ${LIBNAME} ${LIB_OBJ}
-	@echo "\nLibrary ${LIBNAME} compiled."
-	@ranlib ${LIBNAME}
-	@echo "Library ${LIBNAME} indexed."
+	@ar rc libud_${LIBNAME}.a ${BIN} ${LIB_OBJ}
+	@echo "\nStatic library libud_${LIBNAME}.a compiled."
+	@ranlib libud_${LIBNAME}.a
+	@echo "Static library libud_${LIBNAME}.a indexed."
 	@rm *.o
 
 extract:

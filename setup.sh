@@ -137,12 +137,16 @@ make_dep_name=""
 for dep in "${dependencies[@]}"; do
     eval $dep
     actual_folder="${ud_lib_path}/clone/$name"
+    # if exist pas or update
     if [ ! -d "$actual_folder" ]; then
         info_print "--> Trying install [ $name ] dependence $location"
+        # if existe pas
         if !(git clone $link $actual_folder > /dev/null 2>&1) ; then
             error_print "Can't download dependence $name <-> $link" "\t"
         fi
         success_print "Dependence was downloaded" "\t"
+        # if update
+        # git pull in specific folder
         if !(chmod +x "$actual_folder/setup.sh" > /dev/null 2>&1); then
             error_print "Can't chmod dependence" "\t"
         fi
@@ -152,7 +156,7 @@ for dep in "${dependencies[@]}"; do
         fi
         success_print "Dependence was installed" "\t"
     fi
-    $dep_recursive && new_lib="-lud_${name//'"'}" || new_lib="$ud_lib_path/libud_${name//'"'}.a"
+    $dep_recursive && new_lib="-lud_${name//'"'}" || new_lib="$ud_lib_path/lib/libud_${name//'"'}.a"
     make_dep_name="$make_dep_name $new_lib"
 
 done
@@ -164,8 +168,7 @@ if ! $dep_recursive ; then
     if !(cp res/include/* $ud_lib_path/include/); then
         error_print "Copy headers files to $ud_lib_path/include/ failed"
     fi
-    # if !(make LIBNAME="libud_$target_name.a" DEPNAME="$make_dep_name"); then
-    if !(make static LIBNAME="libud_$target_name.a" DEPNAME="$make_dep_name"); then
+    if !(make static LIBNAME="$target_name" DEPNAME="$make_dep_name"); then
         error_print "Compilation failed"
     fi
     if !(cp *.a $ud_lib_path/lib/); then
@@ -178,8 +181,7 @@ else
     if !(cp $location/res/include/* $ud_lib_path/include/); then
         error_print "Copy headers files from $location/res/include/ to $ud_lib_path/include/ failed"
     fi
-    # if !(make static -C $location LIBNAME="libud_$target_name.a" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
-    if !(make -C $location LIBNAME="libud_$target_name.a" DEPNAME="$make_dep_name"); then
+    if !(make -C $location LIBNAME="$target_name" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
         error_print "Compilation failed"
     fi
     if !(cp $location/*.a $ud_lib_path/lib/); then
