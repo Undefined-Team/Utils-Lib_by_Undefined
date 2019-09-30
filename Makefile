@@ -28,9 +28,9 @@ all: libud_$(LIBNAME).a
 
 libud_$(LIBNAME).a: $(BIN)
 	@ar rc libud_${LIBNAME}.a ${BIN}
-	@echo "\t$(G)Success: Library libud_${LIBNAME}.a compiled.$(N)"
+	@echo "\t$(G)Success: Dynamic library [ libud_${LIBNAME}.a ] compiled.$(N)"
 	@ranlib libud_${LIBNAME}.a
-	@echo "\t$(G)Success: Library libud_${LIBNAME}.a indexed.$(N)"
+	@echo "\t$(G)Success: Dynamic library [ libud_${LIBNAME}.a ] indexed.$(N)"
 
 $(BIN_PATH)$(LIBNAME)_%.o: $(SRC_PATH)%.c
 	@mkdir -p $(BIN_PATH) || true
@@ -49,9 +49,9 @@ re: fclean all
 static: libud_${LIBNAME}.a extract
 	@$(eval LIB_OBJ=$(shell echo *.o))
 	@ar rc libud_${LIBNAME}.a ${BIN} ${LIB_OBJ}
-	@echo "\t$(G)Success: Static library libud_${LIBNAME}.a compiled.$(N)"
+	@echo "\t$(G)Success: Static library [ libud_${LIBNAME}.a ] compiled.$(N)"
 	@ranlib libud_${LIBNAME}.a
-	@echo "\t$(G)Success: Static library libud_${LIBNAME}.a indexed.$(N)"
+	@echo "\t$(G)Success: Static library [ libud_${LIBNAME}.a ] indexed.$(N)"
 	@rm *.o
 
 extract:

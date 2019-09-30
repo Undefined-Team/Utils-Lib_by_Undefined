@@ -64,11 +64,11 @@ do
         target_name=$col1
         eval "ud_lib_path=$col2"
         i=1
-        ! $dep_recursive && { success_print "Set target lib name to [$col1] and main lib path to [$ud_lib_path]" "\t"; }
+        ! $dep_recursive && { success_print "Set target lib name to  [ $col1 ] and main lib path to [ $ud_lib_path ]" "\t"; }
     # Get dependencies
     else
         dependencies+=("link=$col1 && name=$col2")
-        ! $dep_recursive && { success_print "Found dependency [$col2] with git link $col1" "\t"; }
+        ! $dep_recursive && { success_print "Found dependency [ $col2 ] with git link [ $col1 ]" "\t"; }
     fi
 done < $conf_path
 ! $dep_recursive && { success_print "All done" "\t"; }
@@ -80,7 +80,7 @@ do
     # If fclean parameter detected, fclean project
     if [[ $pparam == "fclean" ]] ; then
         !(make -C $location fclean > /dev/null 2>&1) && { error_print "Can't make fclean in $location folder" "\t"; }
-        success_print "Make fclean in $location folder" "\t"
+        success_print "Make fclean in [ $location ] folder" "\t"
     # If libclean parameter detected, remove main lib folder (Full reset)
     elif [[ $pparam == "libclean" ]] ; then
         !(rm -rf $ud_lib_path) && { error_print "Can't remove main lib folder" "\t"; }
@@ -103,15 +103,15 @@ if ! $dep_recursive ; then
             cmd="export ${path_var_array[$i]}='${new_path_array[$i]}:${path_array[$i]}'"
             eval $cmd
             if [[ ! $(sh -c env) == *"${new_path_array[$i]}"* ]]; then
-                error_print "Can't add ${new_path_array[$i]} in ${path_name_array[$i]}" "\t"
+                error_print "Can't add [ ${new_path_array[$i]} ] in [ ${path_name_array[$i]} ]" "\t"
             fi
-            success_print "Env var ${path_name_array[$i]} now contains ${new_path_array[$i]}."
+            success_print "Env var [ ${path_name_array[$i]} ] now contains [ ${new_path_array[$i]} ]"
         fi
         # Set env var in bashrc
         if [[ ! $(cat $bashrc_path) == *"${new_path_array[$i]}"* ]]; then
             echo "export ${path_name_array[$i]}='${new_path_array[$i]}:${path_array[$i]}'" >> $bashrc_path
             if [[ ! $(cat $bashrc_path) == *"${new_path_array[$i]}"* ]]; then
-                error_print "Can't add export command of ${new_path_array[$i]} in ${path_name_array[$i]} in bashrc file" "\t"
+                error_print "Can't add export command of [ ${new_path_array[$i]} ] in [ ${path_name_array[$i]} ] in bashrc file" "\t"
             fi
         fi
     done
@@ -122,8 +122,8 @@ if ! $dep_recursive ; then
     lib_folder_array=("${ud_lib_path}" "${ud_lib_path}/lib" "${ud_lib_path}/include" "${ud_lib_path}/clone")
     for lib_folder in "${lib_folder_array[@]}"; do
         if [ ! -d "$lib_folder" ]; then
-            !(mkdir $lib_folder) && { error_print "Can't create $lib_folder folder" "\t"; }
-            success_print "$lib_folder folder created" "\t"
+            !(mkdir $lib_folder) && { error_print "Can't create  [ $lib_folder ] folder" "\t"; }
+            success_print "[ $lib_folder ] folder created" "\t"
         fi
     done
     success_print "All done" "\t"
@@ -141,27 +141,27 @@ for dep in "${dependencies[@]}"; do
         # Download dependency
         info_print "[ $name ] dependency need to be installed" "\t"
         if !(git clone $link $actual_folder > /dev/null 2>&1) ; then
-            error_print "Can't download dependence $name <-> $link" "\t"
+            error_print "Can't download dependency [ $name ] <-> [ $link ]" "\t"
         fi
-        success_print "Dependence was downloaded" "\t"
+        success_print "Dependency was downloaded" "\t"
         # Chmod dependency
         if !(chmod +x "$actual_folder/setup.sh" > /dev/null 2>&1); then
-            error_print "Can't chmod dependence" "\t"
+            error_print "Can't chmod dependency" "\t"
         fi
-        success_print "Dependence was chmoded" "\t"
+        success_print "Dependency was chmoded" "\t"
         # Install dependency
         if !(bash "$actual_folder/setup.sh" "dep_recursive" $actual_folder); then
-            error_print "Can't install dependence $name <-> $link" "\t"
+            error_print "Can't install dependency [ $name ] <-> [ $link ]" "\t"
         fi
-        success_print "Dependence was installed" "\t"
+        success_print "Dependency was installed" "\t"
     # Check if dependency need to be Updated
     elif [[ $(git -C $actual_folder pull) != "Already up to date." ]] > /dev/null 2>&1 ; then
         # Update dependency
         info_print "[ $name ] dependency need to be updated" "\t"
         if !(bash "$actual_folder/setup.sh" "dep_recursive" $actual_folder "fclean"); then
-            error_print "Can't update dependence $name <-> $link" "\t"
+            error_print "Can't update dependency [ $name ] <-> [ $link ]" "\t"
         fi
-        success_print "Dependence was updated" "\t"
+        success_print "Dependency was updated" "\t"
     fi
     # Create makefile parameter
     make_dep_name="$make_dep_name -lud_${name//'"'}"
@@ -175,7 +175,7 @@ if ! $dep_recursive ; then
     info_print "\n (7) Start compiling"
     # Copy headers in main lib folder
     if !(cp res/include/* $ud_lib_path/include/); then
-        error_print "Copy headers files to $ud_lib_path/include/ failed"
+        error_print "Copy headers files to [ $ud_lib_path/include/ ] failed"
     fi
     # Compil
     if !(make static LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"); then
@@ -183,7 +183,7 @@ if ! $dep_recursive ; then
     fi
     # Copy lib in main lib folder
     if !(cp *.a $ud_lib_path/lib/); then
-        error_print "Copy compiled files to $ud_lib_path/lib/ failed"
+        error_print "Copy compiled files to [ $ud_lib_path/lib/ ] failed"
     fi
     success_print "All done\n" "\t"
     success_print "Install completed. Shell restarting...\n"
@@ -191,7 +191,7 @@ if ! $dep_recursive ; then
 else
     # Copy headers in main lib folder
     if !(cp $location/res/include/* $ud_lib_path/include/); then
-        error_print "Copy headers files from $location/res/include/ to $ud_lib_path/include/ failed"
+        error_print "Copy headers files from [ $location/res/include/ ] to [ $ud_lib_path/include/ ] failed"
     fi
     # Compil
     if !(make -C $location LIBNAME="$target_name" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
@@ -199,7 +199,7 @@ else
     fi
     # Copy lib in main lib folder
     if !(cp $location/*.a $ud_lib_path/lib/); then
-        error_print "Copy compiled files from $location/ to $ud_lib_path/lib/ failed"
+        error_print "Copy compiled files from [ $location/ ] to [ $ud_lib_path/lib/ ] failed"
     fi
 fi
 exit 0
