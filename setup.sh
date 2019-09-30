@@ -22,12 +22,12 @@ NC='\033[0m'
 
 if [ ! -z "$1" ] && [ $1 != "dep_recursive" ] || [ -z "$1" ] ; then
     dep_recursive=false
-    location="./"
+    location="$( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && pwd )"
 else
     dep_recursive=true
     location=$2
-    conf_path="$location/$conf_path"
 fi
+conf_path="$location/$conf_path"
 
 function error_print {
     printf "$RED"
@@ -55,7 +55,7 @@ fi
 ! $dep_recursive && { info_print "\n (2) Get configuration in conf.csv"; }
 dependencies=()
 i=0
-[ ! -f $conf_path ] && { error_print "Configuration file not found" "\t"; }
+[ ! -f "$conf_path" ] && { error_print "Configuration file not found" "\t"; }
 while IFS=, read -r col1 col2
 do
     col2=${col2//[$'\t\r\n ']}
@@ -70,7 +70,7 @@ do
         dependencies+=("link=$col1 && name=$col2")
         ! $dep_recursive && { success_print "Found dependency [ $col2 ] with git link [ $col1 ]" "\t"; }
     fi
-done < $conf_path
+done < "$conf_path"
 ! $dep_recursive && { success_print "All done" "\t"; }
 
 # 3 - Preprocessing
@@ -79,11 +79,11 @@ for pparam in "$@"
 do
     # If fclean parameter detected, fclean project
     if [[ $pparam == "fclean" ]] ; then
-        !(make -C $location fclean > /dev/null 2>&1) && { error_print "Can't make fclean in $location folder" "\t"; }
+        !(make -C "$location" fclean > /dev/null 2>&1) && { error_print "Can't make fclean in $location folder" "\t"; }
         success_print "Make fclean in [ $location ] folder" "\t"
     # If libclean parameter detected, remove main lib folder (Full reset)
     elif [[ $pparam == "libclean" ]] ; then
-        !(rm -rf $ud_lib_path) && { error_print "Can't remove main lib folder" "\t"; }
+        !(rm -rf "$ud_lib_path") && { error_print "Can't remove main lib folder" "\t"; }
         success_print "Main lib folder removed" "\t"
     fi
 done
@@ -122,7 +122,7 @@ if ! $dep_recursive ; then
     lib_folder_array=("${ud_lib_path}" "${ud_lib_path}/lib" "${ud_lib_path}/include" "${ud_lib_path}/clone")
     for lib_folder in "${lib_folder_array[@]}"; do
         if [ ! -d "$lib_folder" ]; then
-            !(mkdir $lib_folder) && { error_print "Can't create  [ $lib_folder ] folder" "\t"; }
+            !(mkdir -p "$lib_folder") && { error_print "Can't create  [ $lib_folder ] folder" "\t"; }
             success_print "[ $lib_folder ] folder created" "\t"
         fi
     done
@@ -174,19 +174,19 @@ done
 if ! $dep_recursive ; then
     info_print "\n (7) Start compiling"
     # Copy headers in main lib folder
-    if !(cp res/include/* $ud_lib_path/include/); then
+    if !(cp "$location"/res/include/* "$ud_lib_path"/include/); then
         error_print "Copy headers files to [ $ud_lib_path/include/ ] failed"
     fi
     # Compil
     if [[ ${#dependencies[@]} ]] ; then
-        if !(make LIBNAME="$target_name" DEPNAME="$make_dep_name"); then
+        if !(make -C "$location" --no-print-directory LIBNAME="$target_name" DEPNAME="$make_dep_name"); then
             error_print "Compilation failed"
         fi 
-    elif !(make static LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"); then
+    elif !(make -C "$location" --no-print-directory static LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"); then
         error_print "Compilation failed"
     fi
     # Copy lib in main lib folder
-    if !(cp *.a $ud_lib_path/lib/); then
+    if !(cp "$location"/*.a "$ud_lib_path"/lib/); then
         error_print "Copy compiled files to [ $ud_lib_path/lib/ ] failed"
     fi
     success_print "All done\n" "\t"
@@ -194,15 +194,15 @@ if ! $dep_recursive ; then
     exec $SHELL
 else
     # Copy headers in main lib folder
-    if !(cp $location/res/include/* $ud_lib_path/include/); then
+    if !(cp "$location"/res/include/* "$ud_lib_path"/include/); then
         error_print "Copy headers files from [ $location/res/include/ ] to [ $ud_lib_path/include/ ] failed"
     fi
     # Compil
-    if !(make -C $location LIBNAME="$target_name" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
+    if !(make -C "$location" LIBNAME="$target_name" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
         error_print "Compilation failed"
     fi
     # Copy lib in main lib folder
-    if !(cp $location/*.a $ud_lib_path/lib/); then
+    if !(cp "$location"/*.a "$ud_lib_path"/lib/); then
         error_print "Copy compiled files from [ $location/ ] to [ $ud_lib_path/lib/ ] failed"
     fi
 fi
