@@ -122,7 +122,7 @@ if ! $dep_recursive ; then
 fi
 
 # 5 - Dependencies
-! $dep_recursive && { info_print "\nCheck if need install dependencies"; }
+! $dep_recursive && { info_print "\nCheck if need install/update dependencies"; }
 make_dep_name=""
 make_ar_name=""
 for dep in "${dependencies[@]}"; do
@@ -130,7 +130,7 @@ for dep in "${dependencies[@]}"; do
     actual_folder="${ud_lib_path}/clone/$name"
     # if exist pas or update
     if [ ! -d "$actual_folder" ]; then
-        info_print "--> Trying install [ $name ] dependence $location"
+        info_print "--> Trying install [ $name ] dependence"
         # if existe pas
         if !(git clone $link $actual_folder > /dev/null 2>&1) ; then
             error_print "Can't download dependence $name <-> $link" "\t"

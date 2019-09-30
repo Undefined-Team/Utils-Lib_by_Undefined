@@ -20,9 +20,7 @@ COMPILE           =     $(CC) $(FLAGS) $(INCLUDE)
 .PHONY            =     all clean fclean re static
 
 # Colors
-R                 =     \033[0;31m
-G                 =     \33[32;7m
-B                 =     \033[0;34m
+G                 =     \33[1;32m
 N                 =     \033[0m
 # Colors
 
@@ -30,13 +28,15 @@ all: libud_$(LIBNAME).a
 
 libud_$(LIBNAME).a: $(BIN)
 	@ar rc libud_${LIBNAME}.a ${BIN}
-	@echo "\nLibrary libud_${LIBNAME}.a compiled."
+	@echo "\t$(G)Success: Library libud_${LIBNAME}.a compiled.$(N)"
 	@ranlib libud_${LIBNAME}.a
-	@echo "Library libud_${LIBNAME}.a indexed."
+	@echo "\t$(G)Success: Library libud_${LIBNAME}.a indexed.$(N)"
 
 $(BIN_PATH)$(LIBNAME)_%.o: $(SRC_PATH)%.c
 	@mkdir -p $(BIN_PATH) || true
+	@echo -n "\t$(G)Success: "
 	$(COMPILE) $^ $(DEPNAME) -o $@ -c
+	@echo -n "$(N)"
 
 clean:
 	@rm -f $(BIN_PATH)/*.o
@@ -49,9 +49,9 @@ re: fclean all
 static: libud_${LIBNAME}.a extract
 	@$(eval LIB_OBJ=$(shell echo *.o))
 	@ar rc libud_${LIBNAME}.a ${BIN} ${LIB_OBJ}
-	@echo "\nStatic library libud_${LIBNAME}.a compiled."
+	@echo "\t$(G)Success: Static library libud_${LIBNAME}.a compiled.$(N)"
 	@ranlib libud_${LIBNAME}.a
-	@echo "Static library libud_${LIBNAME}.a indexed."
+	@echo "\t$(G)Success: Static library libud_${LIBNAME}.a indexed.$(N)"
 	@rm *.o
 
 extract:
