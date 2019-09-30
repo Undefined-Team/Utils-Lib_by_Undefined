@@ -152,15 +152,12 @@ for dep in "${dependencies[@]}"; do
         fi
         success_print "Dependence was installed" "\t"
     fi
-    # actual_dep_name=$(cat $actual_folder/setup.sh | grep -m1 name= | cut -d'=' -f 2)
-    # info_print $actual_dep_name
-
-    $dep_recursive && new_lib="-lud_${name//'"'}" || new_lib="-libud_${name//'"'}.a"
+    $dep_recursive && new_lib="-lud_${name//'"'}" || new_lib="$ud_lib_path/libud_${name//'"'}.a"
     make_dep_name="$make_dep_name $new_lib"
+
 done
 ! $dep_recursive && { success_print "All done" "\t"; }
 
-info_print $make_dep_name
 # 6 - Install
 if ! $dep_recursive ; then
     info_print "\nStart compiling"
