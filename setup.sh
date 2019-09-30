@@ -25,9 +25,9 @@ if [ ! -z "$1" ] && [ $1 != "dep_recursive" ] || [ -z "$1" ] ; then
     location="$( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && pwd )"
 else
     dep_recursive=true
-    location=$2
+    location="$2"
 fi
-conf_path="\"$location\"/$conf_path"
+conf_path="$location/$conf_path"
 
 function error_print {
     printf "$RED"
