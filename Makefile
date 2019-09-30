@@ -25,6 +25,7 @@ N                 =     \033[0m
 # Colors
 
 all: libud_$(LIBNAME).a
+	@echo > /dev/null
 
 libud_$(LIBNAME).a: $(BIN)
 	@ar rc libud_${LIBNAME}.a ${BIN}

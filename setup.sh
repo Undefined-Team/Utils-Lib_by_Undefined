@@ -178,7 +178,11 @@ if ! $dep_recursive ; then
         error_print "Copy headers files to [ $ud_lib_path/include/ ] failed"
     fi
     # Compil
-    if !(make static LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"); then
+    if [[ ${#dependencies[@]} ]] ; then
+        if !(make LIBNAME="$target_name" DEPNAME="$make_dep_name"); then
+            error_print "Compilation failed"
+        fi 
+    elif !(make static LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"); then
         error_print "Compilation failed"
     fi
     # Copy lib in main lib folder
