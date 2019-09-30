@@ -14,34 +14,45 @@ SRCS              =     $(wildcard $(SRC_PATH)*.c)
 SRC               =     $(filter-out $(SRC_BLACKLIST), $(SRCS))
 BINS              =     $(SRC:.c=.o)
 BIN               =     $(addprefix $(BIN_PATH), $(notdir $(BINS)))
+LIB_OBJ           =     $(wildcard *.o)
 
 COMPILE           =     $(CC) $(FLAGS) $(INCLUDE)
 
-.PHONY            =     all clean fclean re
+.PHONY            =     all clean fclean re static
 
 # Colors
-G                 =     \033[1;32m
+R                 =     \033[0;31m
+G                 =     \033[32;7m
+B                 =     \033[0;34m
 N                 =     \33[0m
 # Colors
 
-all: $(NAME)
+all: $(LIBNAME)
 
-$(NAME): $(BIN)
+$(LIBNAME): $(BIN)
 	@ar rc ${LIBNAME} $^
-	@echo "	$(G)Success: Library ${LIBNAME} compiled.$(N)"
+	@echo "\n${N}Library ${LIBNAME} compiled."
 	@ranlib ${LIBNAME}
-	@echo "	$(G)Success: Library ${LIBNAME} indexed.$(N)"
+	@echo "Library ${LIBNAME} indexed."
 
 $(BIN_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir -p $(BIN_PATH) || true
-	@echo -n "\t$(G)Success: "
 	$(COMPILE) $^ -o $@ $(DEPNAME) -c
-	@echo -n "$(N)"
 
 clean:
 	@rm -f $(BIN)
 
 fclean: clean
-	@rm -f libud*.a
+	@rm -f ${LIBNAME}
 
 re: fclean all
+
+static:
+	@for dep in $(DEPNAME); do \
+		echo $${dep}; \
+		ar x $${dep}; \
+	done
+	ar rc ${LIBNAME} $(LIB_OBJ)
+	echo "\n${N}Library ${LIBNAME} compiled."
+	ranlib ${LIBNAME}
+	echo "Library ${LIBNAME} indexed."
