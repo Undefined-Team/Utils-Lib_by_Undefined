@@ -69,6 +69,8 @@ do
     col2=${col2//[$'\t\r\n"']}
     col1=$(trim "$col1")
     col2=$(trim "$col2")
+    col1=$(echo "$col1" | sed -r 's/[ ]+/_/g')
+    col2=$(echo "$col2" | sed -r 's/[ ]+/_/g')
     # Get name and main lib folder path of the project
     if [ $i == 0 ] ; then
         target_name="$col1"
