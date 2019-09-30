@@ -154,7 +154,8 @@ else
     if !(cp $location/res/include/* $ud_lib_path/include/); then
         error_print "Copy headers files from $location/res/include/ to $ud_lib_path/include/ failed"
     fi
-    if !(make -C static $location LIBNAME="libud_$target_name.a" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
+    # if !(make -C static $location LIBNAME="libud_$target_name.a" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
+    if !(make -C static $location LIBNAME="libud_$target_name.a" DEPNAME="$make_dep_name"); then
         error_print "Compilation failed"
     fi
     if !(cp $location/*.a $ud_lib_path/lib/); then
