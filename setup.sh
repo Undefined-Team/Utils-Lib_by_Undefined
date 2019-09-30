@@ -27,7 +27,7 @@ else
     dep_recursive=true
     location=$2
 fi
-conf_path="$location/$conf_path"
+conf_path="\"$location\"/$conf_path"
 
 function error_print {
     printf "$RED"
