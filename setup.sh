@@ -55,14 +55,10 @@ do
         target_name=$col1
         eval "ud_lib_path=$col2"
         i=1
-        if ! $dep_recursive ; then
-            success_print "Set target lib name to [$col1] and main lib path to [$ud_lib_path]" "\t"
-        fi
+        ! $dep_recursive && { success_print "Set target lib name to [$col1] and main lib path to [$ud_lib_path]" "\t"; }
     else
         dependencies+=("link=$col1 && name=$col2")
-        if ! $dep_recursive ; then
-            success_print "Found dependency [$col2] with git link $col1" "\t"
-        fi
+        ! $dep_recursive && { success_print "Found dependency [$col2] with git link $col1" "\t"; }
     fi
 done < $conf_path
 ! $dep_recursive && { success_print "All done" "\t"; }
@@ -74,14 +70,10 @@ if ! $dep_recursive ; then
     for pparam in "$@"
     do
         if [[ $pparam == "fclean" ]] ; then
-            if !(make fclean > /dev/null 2>&1) ; then
-                error_print "Can't make fclean in current folder" "\t"
-            fi
+            !(make fclean > /dev/null 2>&1) && { error_print "Can't make fclean in current folder" "\t"; }
             success_print "Make fclean in current folder" "\t"
         elif [[ $pparam == "libclean" ]] ; then
-            if !(rm -rf $ud_lib_path) ; then
-                error_print "Can't remove main lib folder" "\t"
-            fi
+            !(rm -rf $ud_lib_path) && { error_print "Can't remove main lib folder" "\t"; }
             success_print "Main lib folder removed" "\t"
         fi
     done
@@ -121,9 +113,7 @@ if ! $dep_recursive ; then
     lib_folder_array=("${ud_lib_path}" "${ud_lib_path}/lib" "${ud_lib_path}/include" "${ud_lib_path}/clone")
     for lib_folder in "${lib_folder_array[@]}"; do
         if [ ! -d "$lib_folder" ]; then
-            if !(mkdir $lib_folder) ; then
-                error_print "Can't create $lib_folder folder" "\t"
-            fi
+            !(mkdir $lib_folder) && { error_print "Can't create $lib_folder folder" "\t"; }
             success_print "$lib_folder folder created" "\t"
         fi
     done
@@ -134,6 +124,7 @@ fi
 # 5 - Dependencies
 ! $dep_recursive && { info_print "\nCheck if need install dependencies"; }
 make_dep_name=""
+make_ar_name=""
 for dep in "${dependencies[@]}"; do
     eval $dep
     actual_folder="${ud_lib_path}/clone/$name"
@@ -156,8 +147,10 @@ for dep in "${dependencies[@]}"; do
         fi
         success_print "Dependence was installed" "\t"
     fi
-    $dep_recursive && new_lib="-lud_${name//'"'}" || new_lib="$ud_lib_path/lib/libud_${name//'"'}.a"
-    make_dep_name="$make_dep_name $new_lib"
+    # $dep_recursive && new_lib="-lud_${name//'"'}" || new_lib="$ud_lib_path/lib/libud_${name//'"'}.a"
+    # new_lib=
+    make_dep_name="$make_dep_name -lud_${name//'"'}"
+    ! $dep_recursive && { make_ar_name="$make_ar_name $ud_lib_path/lib/libud_${name//'"'}.a"; }
 
 done
 ! $dep_recursive && { success_print "All done" "\t"; }
@@ -168,7 +161,7 @@ if ! $dep_recursive ; then
     if !(cp res/include/* $ud_lib_path/include/); then
         error_print "Copy headers files to $ud_lib_path/include/ failed"
     fi
-    if !(make static LIBNAME="$target_name" DEPNAME="$make_dep_name"); then
+    if !(make static LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"); then
         error_print "Compilation failed"
     fi
     if !(cp *.a $ud_lib_path/lib/); then

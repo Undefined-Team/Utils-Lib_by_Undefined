@@ -36,7 +36,7 @@ libud_$(LIBNAME).a: $(BIN)
 
 $(BIN_PATH)$(LIBNAME)_%.o: $(SRC_PATH)%.c
 	@mkdir -p $(BIN_PATH) || true
-	$(COMPILE) $^ -o $@ $(DEPNAME) -c
+	$(COMPILE) $^ $(DEPNAME) -o $@ -c
 
 clean:
 	@rm -f $(BIN_PATH)/*.o
@@ -55,6 +55,6 @@ static: libud_${LIBNAME}.a extract
 	@rm *.o
 
 extract:
-	@for dep in $(DEPNAME); do \
+	@for dep in $(ARNAME); do \
 		ar x $${dep}; \
 	done
