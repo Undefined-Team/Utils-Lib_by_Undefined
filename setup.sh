@@ -28,6 +28,7 @@ else
     location="$2"
 fi
 conf_path="$location/$conf_path"
+echo $conf_path
 
 function error_print {
     printf "$RED"
