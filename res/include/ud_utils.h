@@ -7,7 +7,7 @@
 #include <sys/time.h>
 
 // Macro
-# define UD_UT_PRINT_SPACE		    "    "
+# define UD_UT_SPACE_NBR		    4
 # define UD_UT_COLOR_N              "\x1b[0m"
 # define UD_UT_COLOR_U              "\x1b[4m"
 # define UD_UT_COLOR_B              "\x1b[1m"
