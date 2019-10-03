@@ -48,6 +48,7 @@ typedef enum                        {false,true} bool;
 void	                            ud_ut_free_ctr(void **ap);
 double                              ud_ut_update_time(void);
 void                                *ud_ut_malloc(size_t len);
+size_t                              ud_ut_byte_len(char *bytes);
 
 extern char                         *ud_ut_color_t[];
 
