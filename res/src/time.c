@@ -4,7 +4,7 @@ double    ud_ut_update_time(void)
 {
     static struct timeval  ud_ut_time_before;
     static struct timeval  ud_ut_time_after;
-    static bool            first_coming = true;
+    static ud_bool         first_coming = true;
 
     if (first_coming)
     {

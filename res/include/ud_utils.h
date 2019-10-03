@@ -42,7 +42,7 @@
 # define ud_ut_count                register size_t
 
 // Structures
-typedef enum                        {false,true} bool;
+typedef enum                        {false,true} ud_bool;
 
 // Prototypes
 void	                            ud_ut_free_ctr(void **ap);
