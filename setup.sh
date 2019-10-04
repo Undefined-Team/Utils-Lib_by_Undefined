@@ -214,7 +214,7 @@ for dep in "${dependencies[@]}"; do
 
     # Create makefile parameter
     make_dep_name="$make_dep_name -lud_${name//'"'}"
-    ! $dep_recursive && { make_ar_name="$make_ar_name $ud_lib_path/lib/libud_${name//'"'}.a"; }
+    make_ar_name="$make_ar_name $ud_lib_path/lib/libud_${name//'"'}.a"
 
 done
 ! $dep_recursive && { success_print "All done" "\t"; }
