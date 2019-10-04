@@ -17,7 +17,7 @@ BIN               =     $(addprefix $(BIN_PATH), $(addprefix $(LIBNAME)_, $(notd
 
 COMPILE           =     $(CC) $(FLAGS) $(INCLUDE)
 
-.PHONY            =     all clean fclean re static
+.PHONY            =     all extract clean fclean re
 
 # Colors
 G                 =     \33[1;32m
@@ -27,11 +27,24 @@ N                 =     \033[0m
 all: libud_$(LIBNAME).a
 	@echo > /dev/null
 
-libud_$(LIBNAME).a: $(BIN)
-	@ar rc libud_${LIBNAME}.a ${BIN}
-	@echo "\t$(G)Success: Dynamic library [ libud_${LIBNAME}.a ] compiled.$(N)"
+libud_$(LIBNAME).a: $(BIN) extract
+ifdef ARNAME
+	@$(eval LIB_OBJ=$(shell echo *.o))
+endif
+	@ar rc libud_${LIBNAME}.a ${BIN} ${LIB_OBJ}
+	@echo "\t$(G)Success: Static library [ libud_${LIBNAME}.a ] compiled.$(N)"
 	@ranlib libud_${LIBNAME}.a
-	@echo "\t$(G)Success: Dynamic library [ libud_${LIBNAME}.a ] indexed.$(N)"
+	@echo "\t$(G)Success: Static library [ libud_${LIBNAME}.a ] indexed.$(N)"
+ifdef ARNAME
+	@rm *.o
+endif
+
+extract:
+ifdef ARNAME
+	@for dep in $(ARNAME); do \
+		ar x $${dep}; \
+	done
+endif
 
 $(BIN_PATH)$(LIBNAME)_%.o: $(SRC_PATH)%.c
 	@mkdir -p $(BIN_PATH) || true
@@ -46,16 +59,3 @@ fclean: clean
 	@rm -f ${wildcard *.a}
 
 re: fclean all
-
-static: libud_${LIBNAME}.a extract
-	@$(eval LIB_OBJ=$(shell echo *.o))
-	@ar rc libud_${LIBNAME}.a ${BIN} ${LIB_OBJ}
-	@echo "\t$(G)Success: Static library [ libud_${LIBNAME}.a ] compiled.$(N)"
-	@ranlib libud_${LIBNAME}.a
-	@echo "\t$(G)Success: Static library [ libud_${LIBNAME}.a ] indexed.$(N)"
-	@rm *.o
-
-extract:
-	@for dep in $(ARNAME); do \
-		ar x $${dep}; \
-	done

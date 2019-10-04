@@ -227,13 +227,16 @@ if ! $dep_recursive ; then
         error_print "Copy headers files to [ $ud_lib_path/include/ ] failed"
     fi
     # Compil
-    if [[ ${#dependencies[@]} == 0 ]] ; then
-        if !(make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name"); then
-            error_print "Compilation failed"
-        fi 
-    elif !(make -C "$location" --no-print-directory static LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"); then
+    # if [[ ${#dependencies[@]} == 0 ]] ; then
+    #     if !(make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name"); then
+    #         error_print "Compilation failed"
+    #     fi 
+    # elif !(make -C "$location" --no-print-directory static LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"); then
+    #     error_print "Compilation failed"
+    # fi
+    if !(make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name"); then
         error_print "Compilation failed"
-    fi
+    fi 
     # Copy lib in main lib folder
     if !(cp "$location"/*.a "$ud_lib_path"/lib/); then
         error_print "Copy compiled files to [ $ud_lib_path/lib/ ] failed"
@@ -251,14 +254,17 @@ elif [[ "$noupdate" != "noupdate" ]] ; then
         error_print "Copy headers files from [ $location/res/include/ ] to [ $ud_lib_path/include/ ] failed"
     fi
     # Compil
-    if [[ ${#dependencies[@]} == 0 ]] ; then
-        if !(make -C "$location" LIBNAME="$target_name" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
-            error_print "Compilation failed"
-        fi
-    else
-        if !(make -C "$location" static LIBNAME="$target_name" DEPNAME="$make_dep_name"); then
-            error_print "Compilation failed"
-        fi
+    # if [[ ${#dependencies[@]} == 0 ]] ; then
+    #     if !(make -C "$location" LIBNAME="$target_name" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
+    #         error_print "Compilation failed"
+    #     fi
+    # else
+    #     if !(make -C "$location" static LIBNAME="$target_name" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
+    #         error_print "Compilation failed"
+    #     fi
+    # fi
+    if !(make -C "$location" LIBNAME="$target_name" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
+        error_print "Compilation failed"
     fi
     # Copy lib in main lib folder
     if !(cp "$location"/*.a "$ud_lib_path"/lib/); then
