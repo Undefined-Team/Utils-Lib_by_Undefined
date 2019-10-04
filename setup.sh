@@ -234,7 +234,7 @@ if ! $dep_recursive ; then
     # elif !(make -C "$location" --no-print-directory static LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"); then
     #     error_print "Compilation failed"
     # fi
-    if !(make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name"); then
+    if !(make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"); then
         error_print "Compilation failed"
     fi 
     # Copy lib in main lib folder
@@ -263,7 +263,7 @@ elif [[ "$noupdate" != "noupdate" ]] ; then
     #         error_print "Compilation failed"
     #     fi
     # fi
-    if !(make -C "$location" LIBNAME="$target_name" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
+    if !(make -C "$location" LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"> /dev/null 2>&1); then
         error_print "Compilation failed"
     fi
     # Copy lib in main lib folder
