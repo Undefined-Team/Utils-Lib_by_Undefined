@@ -265,7 +265,7 @@ elif [[ "$noupdate" != "noupdate" ]] ; then
     # fi
     if !(make -C "$location" LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"); then
         error_print "Compilation failed"
-    fi > /dev/null 2>&1
+    fi
     # Copy lib in main lib folder
     if !(cp "$location"/*.a "$ud_lib_path"/lib/); then
         error_print "Copy compiled files from [ $location/ ] to [ $ud_lib_path/lib/ ] failed"
