@@ -91,7 +91,8 @@ for pparam in "$@"
 do
     # If fclean parameter detected, fclean project
     if [[ $pparam == "fclean" ]] ; then
-        !(make -C "$location" fclean > /dev/null 2>&1) && { error_print "Can't make fclean in $location folder" "\t"; }
+        make -C "$location" fclean > /dev/null 2>&1
+        is_error $? && { error_print "Can't make fclean in $location folder" "\t"; }
         success_print "Make fclean in [ $location ] folder" "\t"
     # If libclean parameter detected, remove main lib folder (Full reset)
     elif [[ $pparam == "libclean" ]] ; then
@@ -168,7 +169,8 @@ if ! $dep_recursive ; then
     lib_folder_array=("${ud_lib_path}" "${ud_lib_path}/lib" "${ud_lib_path}/include" "${ud_lib_path}/clone")
     for lib_folder in "${lib_folder_array[@]}"; do
         if [ ! -d "$lib_folder" ]; then
-            !(mkdir -p "$lib_folder") && { error_print "Can't create  [ $lib_folder ] folder" "\t"; }
+            mkdir -p "$lib_folder"
+            is_error $? && { error_print "Can't create  [ $lib_folder ] folder" "\t"; }
             success_print "[ $lib_folder ] folder created" "\t"
         fi
     done
@@ -186,15 +188,20 @@ for dep in "${dependencies[@]}"; do
     if [ ! -d "$actual_folder" ]; then
         # Download dependency
         info_print "[ $name ] dependency need to be installed" "\t"
-        if !(git clone "$link" "$actual_folder" > /dev/null 2>&1) ; then
-            error_print "Can't download dependency [ $name ] <-> [ $link ]" "\t"
-        fi
+        # if !(git clone "$link" "$actual_folder" > /dev/null 2>&1) ; then
+        #     error_print "Can't download dependency [ $name ] <-> [ $link ]" "\t"
+        # fi
+        git clone "$link" "$actual_folder" > /dev/null 2>&1
+        is_error $? && { error_print "Can't download dependency [ $name ] <-> [ $link ]" "\t"; }
         success_print "Dependency was downloaded" "\t"
         # Chmod dependency
-        if !(chmod +x "$actual_folder/setup.sh" > /dev/null 2>&1); then
-            error_print "Can't chmod dependency" "\t"
-        fi
+        # if !(chmod +x "$actual_folder/setup.sh" > /dev/null 2>&1); then
+        #     error_print "Can't chmod dependency" "\t"
+        # fi
+        chmod +x "$actual_folder/setup.sh" > /dev/null 2>&1
+        is_error $? && { error_print "Can't chmod dependency" "\t"; }
         success_print "Dependency was chmoded" "\t"
+        # Install dependency
         success_print "Dependency is installing..." "\t"
         # if !(bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder" "$noupdate" "$nodepmake"); then
         #     error_print "Can't install dependency [ $name ] <-> [ $link ]" "\t"
