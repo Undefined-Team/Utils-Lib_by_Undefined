@@ -13,7 +13,7 @@
 
 # ------------------------------------------------------------- #
 
-conf_path="conf.csv"
+conf_path="conf"
 
 # 0 - Utils
 BLUE='\033[1;34m'
@@ -27,7 +27,6 @@ if [ ! -z "$1" ] && [ $1 != "dep_recursive" ] || [ -z "$1" ] ; then
 else
     dep_recursive=true
     location="$2"
-    name_recursive="$3"
 fi
 conf_path="$location/$conf_path"
 has_set_env=false
@@ -49,15 +48,40 @@ function info_print {
     printf "$BLUE$2$1$NC\n"
 }
 
-function trim {
+function space_trim {
     local var="$*"
     var="${var#"${var%%[![:space:]]*}"}"
     var="${var%"${var##*[![:space:]]}"}"   
     echo -n "$var"
 }
 
-# 1 - Preprocessing
-! $dep_recursive && { info_print "\n (1) Preprocessing"; }
+function csv_param_trim {
+    local var="$*"
+    var=${var//[$'\t\r\n"']}
+    var=$(space_trim "$var")
+    var=$(echo "$var" | sed -r 's/[ ]+/_/g')
+    echo -n "$var"
+}
+
+# 1 - Get configuration
+! $dep_recursive && { info_print "\n (1) Get configuration in $conf_path/conf.csv"; }
+dependencies=()
+i=0
+[ ! -f "$conf_path"/conf.csv ] && { error_print "configuration file not found" "\t"; }
+while IFS=, read -r col1 col2
+do
+    col1=$(csv_param_trim "$col1")
+    col2=$(csv_param_trim "$col2")
+    # Get name and main lib folder path of the project
+    target_name="$col1"
+    eval "ud_lib_path=\"$col2\""
+    i=1
+    ! $dep_recursive && { success_print "Set target lib name to  [ $col1 ] and main lib path to [ $ud_lib_path ]" "\t"; }
+done < "$conf_path"/conf.csv
+! $dep_recursive && { success_print "All done" "\t"; }
+
+# 2 - Preprocessing
+! $dep_recursive && { info_print "\n (2) Preprocessing"; }
 for pparam in "$@"
 do
     # If fclean parameter detected, fclean project
@@ -76,11 +100,11 @@ do
 done
 ! $dep_recursive && { success_print "All done" "\t"; }
 
-# 2 - Check update
-! $dep_recursive && { info_print "\n (2) Check if need update"; }
+# 3 - Check update
+! $dep_recursive && { info_print "\n (3) Check if need update"; }
 if [[ "$noupdate" != "noupdate" ]] ; then
     if [[ $(git -C "$location" pull) != "Already up to date." ]] > /dev/null 2>&1 ; then
-        $dep_recursive && { info_print "[ $name_recursive ] need to be updated" "\t"; }
+        $dep_recursive && { info_print "[ $target_name ] need to be updated" "\t"; }
         success_print "Files updated" "\t"
     fi
 else
@@ -88,36 +112,24 @@ else
 fi
 ! $dep_recursive && { success_print "All done" "\t"; }
 
-# 3 - Get configuration
-! $dep_recursive && { info_print "\n (3) Get configuration in conf.csv"; }
+# 4 - Get dependencies
+! $dep_recursive && { info_print "\n (4) Get dependencies in $conf_path/dependencies.csv"; }
 dependencies=()
 i=0
-[ ! -f "$conf_path" ] && { error_print "Configuration file not found" "\t"; }
+[ ! -f "$conf_path"/dependencies.csv ] && { error_print "dependencies file not found" "\t"; }
 while IFS=, read -r col1 col2
 do
-    col1=${col1//[$'\t\r\n"']}
-    col2=${col2//[$'\t\r\n"']}
-    col1=$(trim "$col1")
-    col2=$(trim "$col2")
-    col1=$(echo "$col1" | sed -r 's/[ ]+/_/g')
-    col2=$(echo "$col2" | sed -r 's/[ ]+/_/g')
-    # Get name and main lib folder path of the project
-    if [ $i == 0 ] ; then
-        target_name="$col1"
-        eval "ud_lib_path=\"$col2\""
-        i=1
-        ! $dep_recursive && { success_print "Set target lib name to  [ $col1 ] and main lib path to [ $ud_lib_path ]" "\t"; }
+    col1=$(csv_param_trim "$col1")
+    col2=$(csv_param_trim "$col2")
     # Get dependencies
-    else
-        dependencies+=("link='$col1' && name='$col2'")
-        ! $dep_recursive && { success_print "Found dependency [ $col2 ] with git link [ $col1 ]" "\t"; }
-    fi
-done < "$conf_path"
+    dependencies+=("link='$col1' && name='$col2'")
+    ! $dep_recursive && { success_print "Found dependency [ $col2 ] with git link [ $col1 ]" "\t"; }
+done < "$conf_path"/dependencies.csv
 ! $dep_recursive && { success_print "All done" "\t"; }
 
 if ! $dep_recursive ; then
-    # 4 - Set up path in env var
-    info_print "\n (4) Check if need create main lib env path";
+    # 5 - Set up path in env var
+    info_print "\n (5) Check if need create main lib env path";
     new_path_array=("$ud_lib_path/lib" "$ud_lib_path/include")
     path_name_array=("LIBRARY_PATH" "C_INCLUDE_PATH")
     path_array=("$LIBRARY_PATH" "$C_INCLUDE_PATH")
@@ -145,8 +157,8 @@ if ! $dep_recursive ; then
     done
     success_print "All done" "\t"
 
-    # 5 - Create folder
-    info_print "\n (5) Check if need create main lib folder" 
+    # 6 - Create folder
+    info_print "\n (6) Check if need create main lib folder" 
     lib_folder_array=("${ud_lib_path}" "${ud_lib_path}/lib" "${ud_lib_path}/include" "${ud_lib_path}/clone")
     for lib_folder in "${lib_folder_array[@]}"; do
         if [ ! -d "$lib_folder" ]; then
@@ -157,8 +169,8 @@ if ! $dep_recursive ; then
     success_print "All done" "\t"
 fi
 
-# 6 - Dependencies
-! $dep_recursive && { info_print "\n (6) Check if need install/update dependencies"; }
+# 7 - Dependencies
+! $dep_recursive && { info_print "\n (7) Check if need install/update dependencies"; }
 make_dep_name=""
 make_ar_name=""
 for dep in "${dependencies[@]}"; do
@@ -177,12 +189,12 @@ for dep in "${dependencies[@]}"; do
             error_print "Can't chmod dependency" "\t"
         fi
         success_print "Dependency was chmoded" "\t"
-        if !(bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder" "$name" "$noupdate" "$nodepmake"); then
+        if !(bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder" "$noupdate" "$nodepmake"); then
             error_print "Can't install dependency [ $name ] <-> [ $link ]" "\t"
         fi
         success_print "Dependency was installed" "\t"
     else
-        if !(bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder" "$name" "$noupdate" "$nodepmake"); then
+        if !(bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder" "$noupdate" "$nodepmake"); then
             error_print "Can't scan dependency [ $name ] <-> [ $link ]" "\t"
         fi
     fi
@@ -206,9 +218,9 @@ for dep in "${dependencies[@]}"; do
 done
 ! $dep_recursive && { success_print "All done" "\t"; }
 
-# 7 - Install
+# 8 - Install
 if ! $dep_recursive ; then
-    info_print "\n (7) Start compiling"
+    info_print "\n (8) Start compiling"
     # Copy headers in main lib folder
     if !(cp "$location"/res/include/* "$ud_lib_path"/include/); then
         error_print "Copy headers files to [ $ud_lib_path/include/ ] failed"
