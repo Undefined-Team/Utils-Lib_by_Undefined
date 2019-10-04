@@ -256,7 +256,7 @@ elif [[ "$noupdate" != "noupdate" ]] ; then
             error_print "Compilation failed"
         fi
     else
-        if !(make -C "$location" static LIBNAME="$target_name" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
+        if !(make -C "$location" static LIBNAME="$target_name" DEPNAME="$make_dep_name"); then
             error_print "Compilation failed"
         fi
     fi
