@@ -27,7 +27,7 @@ N                 =     \033[0m
 all: libud_$(LIBNAME).a
 	@echo > /dev/null
 
-libud_$(LIBNAME).a: $(BIN) extract
+libud_$(LIBNAME).a: $(BIN) extract $(INCLUDE_PATH)ud_$(LIBNAME).h
 ifdef ARNAME
 	@$(eval LIB_OBJ=$(shell echo *.o))
 endif
