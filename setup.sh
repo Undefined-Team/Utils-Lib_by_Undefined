@@ -104,10 +104,11 @@ done
 # 3 - Check update
 ! $dep_recursive && { info_print "\n (3) Check if need update"; }
 if [[ "$noupdate" != "noupdate" ]] ; then
-    if [[ $(git -C "$location" pull) != "Already up to date." ]] ; then
+    git -C "$location" pull
+    # if [[ $(git -C "$location" pull) != "Already up to date." ]] ; then
         $dep_recursive && { info_print "[ $target_name ] need to be updated" "\t"; }
         success_print "Files updated" "\t"
-    fi
+    # fi
 else
     ! $dep_recursive && { success_print "No update parameter detected" "\t"; }
 fi
