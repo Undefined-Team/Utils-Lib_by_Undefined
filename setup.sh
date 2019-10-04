@@ -285,7 +285,7 @@ cp "$location"/res/include/* "$ud_lib_path"/include/
 if ! $dep_recursive ; then
     make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"
 else
-    make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name" > /dev/null 2>&1
+    make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"
 fi
 [[ "$?" == "1" ]] && { error_print "Compilation failed"; }
 # Copy lib in main lib folder
