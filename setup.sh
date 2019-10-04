@@ -64,6 +64,10 @@ function csv_param_trim {
     echo -n "$var"
 }
 
+function is_error {
+    echo -n [[ "$*" != "0" ]]
+}
+
 # 1 - Get configuration
 ! $dep_recursive && { info_print "\n (1) Get configuration in $conf_path/conf.csv"; }
 dependencies=()
@@ -196,13 +200,13 @@ for dep in "${dependencies[@]}"; do
         #     error_print "Can't install dependency [ $name ] <-> [ $link ]" "\t"
         # fi
         bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder" "$noupdate" "$nodepmake"
-        [[ "$?" != "0" ]] && { error_print "Can't install dependency [ $name ] <-> [ $link ]" "\t"; }
+        is_error $? && { error_print "Can't install dependency [ $name ] <-> [ $link ]" "\t"; }
     else
         # if !(bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder" "$noupdate" "$nodepmake"); then
         #     error_print "Can't scan dependency [ $name ] <-> [ $link ]" "\t"
         # fi
         bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder" "$noupdate" "$nodepmake"
-        [[ "$?" != "0" ]] && { error_print "Can't scan dependency [ $name ] <-> [ $link ]" "\t"; }
+        is_error $? && { error_print "Can't scan dependency [ $name ] <-> [ $link ]" "\t"; }
     fi
         # success_print "Dependency was installed" "\t"
     # Check if dependency need to be Updated
@@ -280,17 +284,17 @@ done
 ! $dep_recursive && { info_print "\n (8) Start compiling"; }
 # Copy headers in main lib folder
 cp "$location"/res/include/* "$ud_lib_path"/include/
-[[ "$?" != "0" ]] && { error_print "Copy headers files to [ $ud_lib_path/include/ ] failed"; }
+is_error $? && { error_print "Copy headers files to [ $ud_lib_path/include/ ] failed"; }
 # Compil
 if ! $dep_recursive ; then
     make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"
 else
     make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"
 fi
-[[ "$?" != "0" ]] && { error_print "Compilation failed"; }
+is_error $? && { error_print "Compilation failed"; }
 # Copy lib in main lib folder
 cp "$location"/*.a "$ud_lib_path"/lib/
-[[ "$?" != "0" ]] && { error_print "Copy compiled files to [ $ud_lib_path/lib/ ] failed"; }
+is_error $? && { error_print "Copy compiled files to [ $ud_lib_path/lib/ ] failed"; }
 if ! $dep_recursive ; then
     success_print "All done\n" "\t"
     success_print "Install completed."
