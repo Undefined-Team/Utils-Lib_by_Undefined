@@ -10,6 +10,7 @@
 # -> fclean (make fclean in current project folder before make)
 # -> libclean (remove main lib folder, then all dependencies)
 # -> noupdate (Will not check if update is needed recursively)
+# -> nodepmake (Will not make dependencies and sub dependencies)
 
 # ------------------------------------------------------------- #
 
@@ -67,7 +68,7 @@ function csv_param_trim {
 ! $dep_recursive && { info_print "\n (1) Get configuration in $conf_path/conf.csv"; }
 dependencies=()
 i=0
-[ ! -f "$conf_path"/conf.csv ] && { error_print "configuration file not found" "\t"; }
+[ ! -f "$conf_path"/conf.csv ] && { error_print "Configuration file not found" "\t"; }
 while IFS=, read -r col1 col2
 do
     col1=$(csv_param_trim "$col1")
@@ -116,7 +117,7 @@ fi
 ! $dep_recursive && { info_print "\n (4) Get dependencies in $conf_path/dependencies.csv"; }
 dependencies=()
 i=0
-[ ! -f "$conf_path"/dependencies.csv ] && { error_print "dependencies file not found" "\t"; }
+[ ! -f "$conf_path"/dependencies.csv ] && { error_print "Dependencies file not found" "\t"; }
 while IFS=, read -r col1 col2
 do
     col1=$(csv_param_trim "$col1")
