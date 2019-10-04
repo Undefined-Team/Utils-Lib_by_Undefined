@@ -190,10 +190,10 @@ for dep in "${dependencies[@]}"; do
             error_print "Can't chmod dependency" "\t"
         fi
         success_print "Dependency was chmoded" "\t"
+        success_print "Dependency is installing..." "\t"
         if !(bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder" "$noupdate" "$nodepmake"); then
             error_print "Can't install dependency [ $name ] <-> [ $link ]" "\t"
         fi
-        success_print "Dependency was installed" "\t"
     else
         if !(bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder" "$noupdate" "$nodepmake"); then
             error_print "Can't scan dependency [ $name ] <-> [ $link ]" "\t"
