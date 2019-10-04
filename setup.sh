@@ -287,7 +287,9 @@ if ! $dep_recursive ; then
 else
     make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"
 fi
-[[ "$?" == "1" ]] && { error_print "Compilation failed"; }
+vartest=$?
+echo $vartest
+[[ "$vartest" == "1" ]] && { error_print "Compilation failed"; }
 # Copy lib in main lib folder
 cp "$location"/*.a "$ud_lib_path"/lib/
 [[ "$?" == "1" ]] && { error_print "Copy compiled files to [ $ud_lib_path/lib/ ] failed"; }
