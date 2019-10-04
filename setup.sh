@@ -65,7 +65,11 @@ function csv_param_trim {
 }
 
 function is_error {
-    echo -n [[ "$*" != "0" ]]
+    if [[ "$*" != "0" ]] ; then
+        echo -n true
+    else
+        echo -n false
+    fi
 }
 
 # 1 - Get configuration
