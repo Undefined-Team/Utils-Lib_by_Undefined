@@ -9,6 +9,7 @@
 # Parameter list
 # -> fclean (make fclean in current project folder before make)
 # -> libclean (remove main lib folder, then all dependencies)
+# -> noupdate (Will not check if update is needed recursively)
 
 # ------------------------------------------------------------- #
 
@@ -26,9 +27,12 @@ if [ ! -z "$1" ] && [ $1 != "dep_recursive" ] || [ -z "$1" ] ; then
 else
     dep_recursive=true
     location="$2"
+    name_recursive="$3"
 fi
 conf_path="$location/$conf_path"
 has_set_env=false
+noupdate=""
+nodepmake=""
 
 function error_print {
     printf "$RED"
@@ -52,15 +56,40 @@ function trim {
     echo -n "$var"
 }
 
-# 1 - Check update
-! $dep_recursive && { info_print "\n (1) Check if need update"; }
-if [[ $(git pull) != "Already up to date." ]] > /dev/null 2>&1 ; then
-    ! $dep_recursive && { success_print "Files updated" "\t"; }
+# 1 - Preprocessing
+! $dep_recursive && { info_print "\n (1) Preprocessing"; }
+for pparam in "$@"
+do
+    # If fclean parameter detected, fclean project
+    if [[ $pparam == "fclean" ]] ; then
+        !(make -C "$location" fclean > /dev/null 2>&1) && { error_print "Can't make fclean in $location folder" "\t"; }
+        success_print "Make fclean in [ $location ] folder" "\t"
+    # If libclean parameter detected, remove main lib folder (Full reset)
+    elif [[ $pparam == "libclean" ]] ; then
+        !(rm -rf "$ud_lib_path") && { error_print "Can't remove main lib folder" "\t"; }
+        success_print "Main lib folder removed" "\t"
+    elif [[ $pparam == "noupdate" ]] ; then
+        noupdate="noupdate"
+    elif [[ $pparam == "nodepmake" ]] ; then
+        nodepmake="nodepmake"
+    fi
+done
+! $dep_recursive && { success_print "All done" "\t"; }
+
+# 2 - Check update
+! $dep_recursive && { info_print "\n (2) Check if need update"; }
+if [[ "$noupdate" != "noupdate" ]] ; then
+    if [[ $(git -C "$location" pull) != "Already up to date." ]] > /dev/null 2>&1 ; then
+        $dep_recursive && { info_print "[ $name_recursive ] need to be updated" "\t"; }
+        success_print "Files updated" "\t"
+    fi
+else
+    ! $dep_recursive && { success_print "No update parameter detected" "\t"; }
 fi
 ! $dep_recursive && { success_print "All done" "\t"; }
 
-# 2 - Get configuration
-! $dep_recursive && { info_print "\n (2) Get configuration in conf.csv"; }
+# 3 - Get configuration
+! $dep_recursive && { info_print "\n (3) Get configuration in conf.csv"; }
 dependencies=()
 i=0
 [ ! -f "$conf_path" ] && { error_print "Configuration file not found" "\t"; }
@@ -84,22 +113,6 @@ do
         ! $dep_recursive && { success_print "Found dependency [ $col2 ] with git link [ $col1 ]" "\t"; }
     fi
 done < "$conf_path"
-! $dep_recursive && { success_print "All done" "\t"; }
-
-# 3 - Preprocessing
-! $dep_recursive && { info_print "\n (3) Preprocessing"; }
-for pparam in "$@"
-do
-    # If fclean parameter detected, fclean project
-    if [[ $pparam == "fclean" ]] ; then
-        !(make -C "$location" fclean > /dev/null 2>&1) && { error_print "Can't make fclean in $location folder" "\t"; }
-        success_print "Make fclean in [ $location ] folder" "\t"
-    # If libclean parameter detected, remove main lib folder (Full reset)
-    elif [[ $pparam == "libclean" ]] ; then
-        !(rm -rf "$ud_lib_path") && { error_print "Can't remove main lib folder" "\t"; }
-        success_print "Main lib folder removed" "\t"
-    fi
-done
 ! $dep_recursive && { success_print "All done" "\t"; }
 
 if ! $dep_recursive ; then
@@ -164,20 +177,28 @@ for dep in "${dependencies[@]}"; do
             error_print "Can't chmod dependency" "\t"
         fi
         success_print "Dependency was chmoded" "\t"
-        # Install dependency
-        if !(bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder"); then
+        if !(bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder" "$name" "$noupdate" "$nodepmake"); then
             error_print "Can't install dependency [ $name ] <-> [ $link ]" "\t"
         fi
         success_print "Dependency was installed" "\t"
-    # Check if dependency need to be Updated
-    elif [[ $(git -C "$actual_folder" pull) != "Already up to date." ]] > /dev/null 2>&1 ; then
-        # Update dependency
-        info_print "[ $name ] dependency need to be updated" "\t"
-        if !(bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder" "fclean"); then
-            error_print "Can't update dependency [ $name ] <-> [ $link ]" "\t"
+    else
+        if !(bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder" "$name" "$noupdate" "$nodepmake"); then
+            error_print "Can't scan dependency [ $name ] <-> [ $link ]" "\t"
         fi
-        success_print "Dependency was updated" "\t"
     fi
+        # success_print "Dependency was installed" "\t"
+    # Check if dependency need to be Updated
+    # elif [ "$noupdate" != "noupdate" ] && [ $(git -C "$actual_folder" pull) != "Already up to date." ] > /dev/null 2>&1 ; then
+    #     # Update dependency
+    #     info_print "[ $name ] dependency need to be updated" "\t"
+    #     if !(bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder" "fclean"); then
+    #         error_print "Can't update dependency [ $name ] <-> [ $link ]" "\t"
+    #     fi
+    #     success_print "Dependency was updated" "\t"
+    # fi
+        # Install dependency
+
+
     # Create makefile parameter
     make_dep_name="$make_dep_name -lud_${name//'"'}"
     ! $dep_recursive && { make_ar_name="$make_ar_name $ud_lib_path/lib/libud_${name//'"'}.a"; }
@@ -211,7 +232,7 @@ if ! $dep_recursive ; then
         exec $SHELL
     fi
     printf "\n"
-else
+elif [[ "$noupdate" != "noupdate" ]] ; then
     # Copy headers in main lib folder
     if !(cp "$location"/res/include/* "$ud_lib_path"/include/); then
         error_print "Copy headers files from [ $location/res/include/ ] to [ $ud_lib_path/include/ ] failed"
