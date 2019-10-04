@@ -108,7 +108,7 @@ if [[ "$noupdate" != "noupdate" ]] ; then
     if [[ $(git -C "$location" pull) != "Already up to date." ]] ; then
         $dep_recursive && { info_print "[ $target_name ] need to be updated" "\t"; }
         success_print "Files updated" "\t"
-    # fi
+    fi
 else
     ! $dep_recursive && { success_print "No update parameter detected" "\t"; }
 fi
@@ -264,7 +264,7 @@ elif [[ "$noupdate" != "noupdate" ]] ; then
     #         error_print "Compilation failed"
     #     fi
     # fi
-    if !(make -C "$location" LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name" > /dev/null 2>&1); then
+    if !(make -C "$location" LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name") > /dev/null 2>&1 ; then
         error_print "Compilation failed"
     fi
     # Copy lib in main lib folder
