@@ -192,13 +192,17 @@ for dep in "${dependencies[@]}"; do
         fi
         success_print "Dependency was chmoded" "\t"
         success_print "Dependency is installing..." "\t"
-        if !(bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder" "$noupdate" "$nodepmake"); then
-            error_print "Can't install dependency [ $name ] <-> [ $link ]" "\t"
-        fi
+        # if !(bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder" "$noupdate" "$nodepmake"); then
+        #     error_print "Can't install dependency [ $name ] <-> [ $link ]" "\t"
+        # fi
+        bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder" "$noupdate" "$nodepmake"
+        [[ "$?" == "1" ]] && { error_print "Can't install dependency [ $name ] <-> [ $link ]" "\t"; }
     else
-        if !(bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder" "$noupdate" "$nodepmake"); then
-            error_print "Can't scan dependency [ $name ] <-> [ $link ]" "\t"
-        fi
+        # if !(bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder" "$noupdate" "$nodepmake"); then
+        #     error_print "Can't scan dependency [ $name ] <-> [ $link ]" "\t"
+        # fi
+        bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder" "$noupdate" "$nodepmake"
+        [[ "$?" == "1" ]] && { error_print "Can't scan dependency [ $name ] <-> [ $link ]" "\t"; }
     fi
         # success_print "Dependency was installed" "\t"
     # Check if dependency need to be Updated
@@ -221,27 +225,73 @@ done
 ! $dep_recursive && { success_print "All done" "\t"; }
 
 # 8 - Install
+# if ! $dep_recursive ; then
+#     info_print "\n (8) Start compiling"
+#     # Copy headers in main lib folder
+#     if !(cp "$location"/res/include/* "$ud_lib_path"/include/); then
+#         error_print "Copy headers files to [ $ud_lib_path/include/ ] failed"
+#     fi
+#     # Compil
+#     # if [[ ${#dependencies[@]} == 0 ]] ; then
+#     #     if !(make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name"); then
+#     #         error_print "Compilation failed"
+#     #     fi 
+#     # elif !(make -C "$location" --no-print-directory static LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"); then
+#     #     error_print "Compilation failed"
+#     # fi
+#     if !(make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"); then
+#         error_print "Compilation failed"
+#     fi 
+#     # Copy lib in main lib folder
+#     if !(cp "$location"/*.a "$ud_lib_path"/lib/); then
+#         error_print "Copy compiled files to [ $ud_lib_path/lib/ ] failed"
+#     fi
+#     success_print "All done\n" "\t"
+#     success_print "Install completed."
+#     if $has_set_env ; then
+#         success_print "Shell restarting...\n"
+#         exec $SHELL
+#     fi
+#     printf "\n"
+# elif [[ "$noupdate" != "noupdate" ]] ; then
+#     # Copy headers in main lib folder
+#     if !(cp "$location"/res/include/* "$ud_lib_path"/include/); then
+#         error_print "Copy headers files from [ $location/res/include/ ] to [ $ud_lib_path/include/ ] failed"
+#     fi
+#     # Compil
+#     # if [[ ${#dependencies[@]} == 0 ]] ; then
+#     #     if !(make -C "$location" LIBNAME="$target_name" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
+#     #         error_print "Compilation failed"
+#     #     fi
+#     # else
+#     #     if !(make -C "$location" static LIBNAME="$target_name" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
+#     #         error_print "Compilation failed"
+#     #     fi
+#     # fi
+#     if !(make -C "$location" LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name") > /dev/null 2>&1 ; then
+#         error_print "Compilation failed"
+#     fi
+#     # Copy lib in main lib folder
+#     if !(cp "$location"/*.a "$ud_lib_path"/lib/); then
+#         error_print "Copy compiled files from [ $location/ ] to [ $ud_lib_path/lib/ ] failed"
+#     fi
+# fi
+
+! $dep_recursive && { info_print "\n (8) Start compiling"; }
+# Copy headers in main lib folder
+cp "$location"/res/include/* "$ud_lib_path"/include/
+[[ "$?" == "1" ]] && { error_print "Copy headers files to [ $ud_lib_path/include/ ] failed"; }
+# Compil
 if ! $dep_recursive ; then
-    info_print "\n (8) Start compiling"
-    # Copy headers in main lib folder
-    if !(cp "$location"/res/include/* "$ud_lib_path"/include/); then
-        error_print "Copy headers files to [ $ud_lib_path/include/ ] failed"
-    fi
-    # Compil
-    # if [[ ${#dependencies[@]} == 0 ]] ; then
-    #     if !(make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name"); then
-    #         error_print "Compilation failed"
-    #     fi 
-    # elif !(make -C "$location" --no-print-directory static LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"); then
-    #     error_print "Compilation failed"
-    # fi
-    if !(make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"); then
-        error_print "Compilation failed"
-    fi 
-    # Copy lib in main lib folder
-    if !(cp "$location"/*.a "$ud_lib_path"/lib/); then
-        error_print "Copy compiled files to [ $ud_lib_path/lib/ ] failed"
-    fi
+    make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"
+else
+    make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name" > /dev/null 2>&1
+fi
+[[ "$?" == "1" ]] && { error_print "Compilation failed"; }
+# Copy lib in main lib folder
+cp "$location"/*.a "$ud_lib_path"/lib/
+[[ "$?" == "1" ]] && { error_print "Copy compiled files to [ $ud_lib_path/lib/ ] failed"; }
+if ! $dep_recursive ; then
     success_print "All done\n" "\t"
     success_print "Install completed."
     if $has_set_env ; then
@@ -249,27 +299,5 @@ if ! $dep_recursive ; then
         exec $SHELL
     fi
     printf "\n"
-elif [[ "$noupdate" != "noupdate" ]] ; then
-    # Copy headers in main lib folder
-    if !(cp "$location"/res/include/* "$ud_lib_path"/include/); then
-        error_print "Copy headers files from [ $location/res/include/ ] to [ $ud_lib_path/include/ ] failed"
-    fi
-    # Compil
-    # if [[ ${#dependencies[@]} == 0 ]] ; then
-    #     if !(make -C "$location" LIBNAME="$target_name" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
-    #         error_print "Compilation failed"
-    #     fi
-    # else
-    #     if !(make -C "$location" static LIBNAME="$target_name" DEPNAME="$make_dep_name" > /dev/null 2>&1); then
-    #         error_print "Compilation failed"
-    #     fi
-    # fi
-    if !(make -C "$location" LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name") > /dev/null 2>&1 ; then
-        error_print "Compilation failed"
-    fi
-    # Copy lib in main lib folder
-    if !(cp "$location"/*.a "$ud_lib_path"/lib/); then
-        error_print "Copy compiled files from [ $location/ ] to [ $ud_lib_path/lib/ ] failed"
-    fi
 fi
 exit 0
