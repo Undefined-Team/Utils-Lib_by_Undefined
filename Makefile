@@ -25,8 +25,7 @@ N                 =     \033[0m
 # Colors
 
 all: libud_$(LIBNAME).a
-	@echo > /dev/null
-
+	
 libud_$(LIBNAME).a: $(BIN) extract
 ifdef ARNAME
 	@$(eval LIB_OBJ=$(shell echo *.o))
