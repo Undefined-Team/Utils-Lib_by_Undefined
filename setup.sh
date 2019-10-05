@@ -118,10 +118,10 @@ function is_in_header {
         # eval "local toreadline=$'$line'"
         # IFS= read -ra fields <<< "$line"
         if [[ "${fields[0]}" == "$2" ]] ; then
-            return true
+            true
         fi
     done <<< "$1"
-    return false
+    false
 }
 
 function dep_header_add {
@@ -332,7 +332,7 @@ function start_recursive {
     done
     ! $dep_recursive && { success_print "All done" "\t"; }
 
-    # info_print "$dep_tree" "---"
+    info_print "!!! DEP TREE $dep_tree"
 
     # 8 - Install
     ! $dep_recursive && { info_print "\n (8) Start compiling"; }
