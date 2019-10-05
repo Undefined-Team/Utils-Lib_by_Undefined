@@ -67,9 +67,9 @@ function basic_trim {
     var=$(echo "$var" | tr '\t' ' ')
     var=$(echo "$var" | tr '\r' ' ')
     # var=$(echo "$var" | tr ' ' ' ')
-    info_print "$var <--"
+    # info_print "$var <--"
     var=$(space_trim "$var")
-    info_print "$var <---"
+    # info_print "$var <---"
     echo -n "$var"
 }
 
@@ -80,9 +80,11 @@ function is_error {
 function get_name_in_dep_tree {
     local okbool=false
     local trimed=""
-    while IFS=, read -r line; do
+    eval "local toread=$'$1'"
+    while read -r line; do
         IFS=, read -ra fields <<<"$line"
         trimed=$(basic_trim "${fields[0]}")
+        success_print "line = $trimed"
         success_print "--> $trimed - $2"
         if [[ "$trimed" == "$2" ]] ; then
             echo -n "$line"
@@ -90,17 +92,18 @@ function get_name_in_dep_tree {
             okbool=true
             break
         fi
-    done <<< "$1"
+    done <<< "$toread"
     ! $okbool && { echo -n "1"; }
 }
 
 function is_in_header {
+    eval "local toread=$'$1'"
     while IFS=, read -r line; do
         IFS=, read -ra fields <<< "$line"
         if [[ "${fields[0]}" == "$2" ]] ; then
             return true
         fi
-    done <<< "$1"
+    done <<< "$toread"
     return false
 }
 
@@ -341,4 +344,11 @@ function start_recursive {
 }
 
 start_recursive $@
+# tata="toto\ntiti\ntutu ruru\n"
+# eval "tata=$'$tata'"
+# info_print "$tata"
+# while read -r line; do
+#     echo "... $line ..."
+# done <<< "$tata"
+# get_name_in_dep_tree "$tata" "tutu"
 echo $dep_tree
