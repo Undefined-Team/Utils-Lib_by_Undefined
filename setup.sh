@@ -296,11 +296,8 @@ function start_recursive {
         make_dep_name="$make_dep_name -lud_${name//'"'}"
         make_ar_name="$make_ar_name $ud_lib_path/lib/libud_${name//'"'}.a"
     done
-    ! $dep_recursive && { success_print "All done" "\t"; }
-
-    info_print "!!! $target_name DEP header |$dep_header|"
     dep_header=$(dep_header_format "$dep_header" "$ud_lib_path")
-    info_print "!!! $target_name FDEP header |$dep_header|"
+    ! $dep_recursive && { success_print "All done" "\t"; }
 
     # 8 - Install
     ! $dep_recursive && { info_print "\n (8) Start compiling"; }
@@ -326,7 +323,7 @@ function start_recursive {
         fi
         printf "\n"
     fi
-    echo "$target_name $dep_lst"
+    ! $dep_recursive && { echo "$target_name $dep_lst"; }
 }
 
 start_recursive $@
