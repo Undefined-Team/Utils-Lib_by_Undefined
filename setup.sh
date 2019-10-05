@@ -303,16 +303,18 @@ function start_recursive {
     ! $dep_recursive && { info_print "\n (8) Start compiling"; }
     # Copy headers in main lib folder
     if [ ! -f "$ud_lib_path"/include/ud_"$target_name".h ] || [ $(diff "$location"/res/include/ud_"$target_name".h "$ud_lib_path"/include/ud_"$target_name".h ; echo "$?") != "0" ] > /dev/null 2>&1 ; then
+        info_print "CP FILE"
         cp "$location"/res/include/* "$ud_lib_path"/include/
         is_error $? && { error_print "Copy headers files to [ $ud_lib_path/include/ ] failed"; }
     fi
     # Compil
     if ! $dep_recursive ; then
         make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name" DEPHEADER="$dep_header" >&2
+        is_error $? && { error_print "Compilation failed"; }
     else
         make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name" DEPHEADER="$dep_header" >&2
+        is_error $? && { error_print "Compilation failed"; }
     fi
-    is_error $? && { error_print "Compilation failed"; }
     # Copy lib in main lib folder
     cp "$location"/*.a "$ud_lib_path"/lib/
     is_error $? && { error_print "Copy compiled files to [ $ud_lib_path/lib/ ] failed"; }
