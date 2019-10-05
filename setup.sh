@@ -43,16 +43,8 @@ function space_trim {
     echo -n "$var"
 }
 
-# function basic_trim {
-#     local var="$*"
-#     var=${var//[$'\t\r\n"']}
-#     var=$(space_trim "$var")
-#     echo -n "$var" 
-# }
-
 function csv_param_trim {
     local var="$*"
-    # var=$(basic_trim "$var")
     var=${var//[$'\t\r\n"']}
     var=$(space_trim "$var")
     var=$(echo "$var" | sed -r 's/[ ]+/_/g')
@@ -61,15 +53,10 @@ function csv_param_trim {
 
 function basic_trim {
     local var="$*"
-    # var=$(space_trim "$var")
-    # var=${var//[$'\t\r\n']}
     var=$(echo "$var" | tr '\n' ' ')
     var=$(echo "$var" | tr '\t' ' ')
     var=$(echo "$var" | tr '\r' ' ')
-    # var=$(echo "$var" | tr ' ' ' ')
-    # info_print "$var <--"
     var=$(space_trim "$var")
-    # info_print "$var <---"
     echo -n "$var"
 }
 
@@ -79,48 +66,22 @@ function is_error {
 
 function get_name_in_dep_tree {
     local trimed
-    # local toreadline=""
     eval "local toread=$'$1'"
     while IFS=$'\n' read -r line; do
-        # eval "local toreadline=$'$line'"
         IFS=" " read -a fields <<<"$line"
         trimed=$(basic_trim "${fields[0]}")
-        # success_print "line = $line"
-        # success_print "--> $trimed - $2"
         if [[ "$trimed" == "$2" ]] ; then
             echo -n "$line"
-            # success_print "--> TRUE"
-            # okbool=true
-            # break
             return
         fi
     done <<< "$toread"
     echo -n "1"
 }
 
-# function is_in_header {
-#     local toreadline=""
-#     eval "local toread=$'$1'"
-#     while IFS= read -r line; do
-#         eval "local toreadline=$'$line'"
-#         IFS= read -ra fields <<< "$line"
-#         if [[ "${fields[0]}" == "$2" ]] ; then
-#             return true
-#         fi
-#     done <<< "$toread"
-#     return false
-# }
-
 function is_in_header {
-    # local toreadline=""
-    # eval "local toread=$'$1'"
     IFS=" " read -a dep_header_f <<< "$1"
     for (( j = ${#ret_f[@]} - 1; j >= 0; --j )); do
-        # eval "local toreadline=$'$line'"
-        # IFS= read -ra fields <<< "$line"
-        # success_print "--- ${dep_header_f[j]} == $2 ?" "\t"
         if [[ "${dep_header_f[j]}" == "$2" ]] ; then
-                # success_print "--- YES !!!" "\t\t"
             true
             return
         fi
@@ -131,13 +92,10 @@ function is_in_header {
 function dep_header_add {
     local dep_header="$1"
     local trimed
-    # eval "local toreadline=$'$2'"
     IFS=" " read -a ret_f <<< "$2"
     for (( i = ${#ret_f[@]} - 1; i >= 0; --i )); do
         trimed=$(basic_trim "${ret_f[i]}")
-        # success_print "--- $trimed vs $dep_header"
         if ! is_in_header "$dep_header" "$trimed" ; then
-            # success_print "ADD"
             dep_header="$dep_header $trimed"
         fi
     done
@@ -153,17 +111,6 @@ function dep_header_format {
     done
     echo -n "$dep_header"
 }
-
-# function dep_header_add {
-#     local dep_header="$1"
-#     IFS=" " read -a f_dep_header <<< "$1"
-#     IFS=" " read -a f_ret <<< "$2"
-#     for (( i = ${#f_ret[@]} - 1; i >= 1; --i )); do
-#         for (( j = ${#f_dep_header[@]} - 1; j >= 1; --j )); do
-
-#         done
-#     done
-# }
 
 if [[ $1 == "help" ]] ; then
     info_print "\n How to use setup.sh ?"
@@ -186,8 +133,6 @@ nodepmake=""
 dep_tree=""
 
 function start_recursive {
-
-    # local conf_path="conf"
     local location
     local dep_recursive
     if [ ! -z "$1" ] && [ $1 != "dep_recursive" ] || [ -z "$1" ] ; then
@@ -324,10 +269,7 @@ function start_recursive {
     for dep in "${dependencies[@]}"; do
         eval "$dep"
         actual_folder="${ud_lib_path}/clone/$name"
-        # info_print "DEPTREE --> $dep_tree"
-        # info_print "NAME --> $name"
-        ret=$(get_name_in_dep_tree "$dep_tree" $name) # ATTENTION ""
-        # info_print "RET --> $ret"
+        ret=$(get_name_in_dep_tree "$dep_tree" $name)
         # If dependency already visited
         if [[ "$ret" == "1" ]] ; then
             # Check if dependency need to be installed
@@ -343,10 +285,8 @@ function start_recursive {
                 success_print "Dependency was chmoded" "\t"
                 # Install dependency
                 success_print "Dependency is installing..." "\t"
-                # bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder"
                 ret=$(start_recursive "dep_recursive" "$actual_folder")
             else # ATTENTION ON PEUT COMPRESSER PEUT ETRE
-                # bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder"
                 ret=$(start_recursive "dep_recursive" "$actual_folder")
             fi
             dep_tree="$dep_tree$ret\n"
@@ -390,11 +330,3 @@ function start_recursive {
 }
 
 start_recursive $@
-# tata="toto\ntiti\ntutu ruru\n"
-# eval "tata=$'$tata'"
-# info_print "$tata"
-# while read -r line; do
-#     echo "... $line ..."
-# done <<< "$tata"
-# get_name_in_dep_tree "$tata" "tutu"
-echo $dep_tree
