@@ -65,7 +65,7 @@ function get_name_in_dep_tree {
             break
         fi
     done <<< "$1"
-    $okbool && { echo "1"; }
+    ! $okbool && { echo "1"; }
 }
 
 function is_in_header {
@@ -168,8 +168,8 @@ function start_recursive {
     # 3 - Check update
     ! $dep_recursive && { info_print "\n (3) Check if need update"; }
     if [[ "$noupdate" != "noupdate" ]] ; then
-        # git -C "$location" pull
-        if [[ $(git -C "$location" pull) != "Already up to date." ]] ; then
+        ! gitret=$(git -C "$location" pull) && { error_print "Can't git pull" "\t"; }
+        if [[ "$gitret" != "Already up to date." ]] ; then
             $dep_recursive && { info_print "[ $target_name ] need to be updated" "\t"; }
             success_print "Files updated" "\t"
         fi
