@@ -22,18 +22,18 @@ RED='\033[1;31m'
 NC='\033[0m'
 
 function error_print {
-    printf "$RED"
-    printf "$2Error: $1$NC\n\n"
+    printf "$RED" > &2
+    printf "$2Error: $1$NC\n\n" > &2
     exit 1
 }
 
 function success_print {
-    printf "$GREEN"
-    printf "$2Success: $1$NC\n"
+    printf "$GREEN" > &2
+    printf "$2Success: $1$NC\n" > &2
 }
 
 function info_print {
-    printf "$BLUE$2$1$NC\n"
+    printf "$BLUE$2$1$NC\n" > &2
 }
 
 function space_trim {
