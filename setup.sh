@@ -146,7 +146,7 @@ function dep_header_add {
 
 function dep_header_format {
     local dep_header=""
-    IFS=" " read -a ret_f <<< "$1"
+    IFS=" " read -a dep_header_f <<< "$1"
     for (( i = ${#dep_header_f[@]} - 1; i >= 0; --i )); do
         trimed=$(basic_trim "${dep_header_f[i]}")
         dep_header="$2/${dep_header_f[i]}.h $dep_header"
