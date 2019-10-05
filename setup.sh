@@ -131,8 +131,8 @@ function is_in_header {
 function dep_header_add {
     local dep_header="$1"
     local trimed
-    eval "local toreadline=$'$2'"
-    IFS=" " read -a ret_f <<< "$toreadline"
+    # eval "local toreadline=$'$2'"
+    IFS=" " read -a ret_f <<< "$2"
     for (( i = ${#ret_f[@]} - 1; i >= 1; --i )); do
         trimed=$(basic_trim "${ret_f[i]}")
         success_print "--- $trimed vs $dep_header"
@@ -341,7 +341,7 @@ function start_recursive {
                 ret=$(start_recursive "dep_recursive" "$actual_folder")
                 # is_error $? && { error_print "Can't scan dependency [ $name ] <-> [ $link ]" "\t"; }
             fi
-            dep_tree="$dep_tree$ret"
+            dep_tree="$dep_tree$ret\n"
         fi
         dep_header=$(dep_header_add "$dep_header" "$ret")
         dep_lst="$name $dep_lst"
@@ -376,7 +376,7 @@ function start_recursive {
         fi
         printf "\n"
     fi
-    echo "$target_name $dep_lst\n"
+    echo "$target_name $dep_lst"
 }
 
 start_recursive $@
