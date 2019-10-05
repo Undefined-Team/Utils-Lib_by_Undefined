@@ -122,6 +122,7 @@ function is_in_header {
         if [[ "${dep_header_f[j]}" == "$2" ]] ; then
                 success_print "--- YES !!!" "\t\t"
             true
+            return
         fi
     done
     false
