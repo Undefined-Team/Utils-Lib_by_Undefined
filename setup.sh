@@ -168,7 +168,7 @@ function start_recursive {
     # 3 - Check update
     ! $dep_recursive && { info_print "\n (3) Check if need update"; }
     if [[ "$noupdate" != "noupdate" ]] ; then
-        ! gitret=$(git -C "$location" pull) && { error_print "Can't git pull" "\t"; }
+        ! gitret=$(git -C "$location" pull > /dev/null 2>&1) && { error_print "Can't git pull" "\t"; }
         if [[ "$gitret" != "Already up to date." ]] ; then
             $dep_recursive && { info_print "[ $target_name ] need to be updated" "\t"; }
             success_print "Files updated" "\t"
@@ -291,9 +291,9 @@ function start_recursive {
     is_error $? && { error_print "Copy headers files to [ $ud_lib_path/include/ ] failed"; }
     # Compil
     if ! $dep_recursive ; then
-        make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"
+        make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name" >&2
     else
-        make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name"
+        make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name" >&2
     fi
     is_error $? && { error_print "Compilation failed"; }
     # Copy lib in main lib folder
