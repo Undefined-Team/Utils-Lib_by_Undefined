@@ -63,8 +63,9 @@ function basic_trim {
     local var="$*"
     var=$(space_trim "$var")
     var=${var//[$'\t\r\n']}
-    var=$(space_trim "$var")
     info_print "$var <--"
+    var=$(space_trim "$var")
+    info_print "$var <---"
     echo -n "$var"
 }
 
