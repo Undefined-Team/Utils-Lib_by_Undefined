@@ -25,7 +25,7 @@ N                 =     \033[0m
 # Colors
 
 all: libud_$(LIBNAME).a
-	@echo > /dev/null
+	@echo "BIN: $(BIN) BINS: $(BINS) SRC: $(SRC) SRCS: $(SRCS) LIBNAME: $(LIBNAME) ARNAME: $(ARNAME) DEPNAME: $(DEPNAME) DEPHEADER: $(DEPHEADER)"
 
 libud_$(LIBNAME).a: $(BIN) extract
 ifdef ARNAME
@@ -47,7 +47,6 @@ ifdef ARNAME
 endif
 
 $(BIN_PATH)$(LIBNAME)_%.o: $(SRC_PATH)%.c $(DEPHEADER)
-	@echo "dep $(DEPHEADER)"
 	@mkdir -p $(BIN_PATH) || true
 	@echo -n "\t$(G)Success: "
 	$(COMPILE) $< $(DEPNAME) -o $@ -c
