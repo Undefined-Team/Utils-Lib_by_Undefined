@@ -136,6 +136,7 @@ function dep_header_add {
         trimed=$(basic_trim "${ret_f[i]}")
         success_print "--- $trimed vs $dep_header"
         if ! is_in_header "$dep_header" "$trimed" ; then
+            success_print "ADD"
             dep_header="$dep_header $trimed"
         fi
     done
