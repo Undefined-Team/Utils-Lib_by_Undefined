@@ -118,9 +118,9 @@ function is_in_header {
     for (( j = ${#ret_f[@]} - 1; j >= 0; --j )); do
         # eval "local toreadline=$'$line'"
         # IFS= read -ra fields <<< "$line"
-        success_print "--- ${dep_header_f[j]} == $2 ?" "\t"
+        # success_print "--- ${dep_header_f[j]} == $2 ?" "\t"
         if [[ "${dep_header_f[j]}" == "$2" ]] ; then
-                success_print "--- YES !!!" "\t\t"
+                # success_print "--- YES !!!" "\t\t"
             true
             return
         fi
@@ -132,12 +132,12 @@ function dep_header_add {
     local dep_header="$1"
     local trimed
     # eval "local toreadline=$'$2'"
-    IFS=" " read -a ret_f <<< $(basic_trim "$2")
+    IFS=" " read -a ret_f <<< "$2"
     for (( i = ${#ret_f[@]} - 1; i >= 0; --i )); do
         trimed=$(basic_trim "${ret_f[i]}")
-        success_print "--- $trimed vs $dep_header"
+        # success_print "--- $trimed vs $dep_header"
         if ! is_in_header "$dep_header" "$trimed" ; then
-            success_print "ADD"
+            # success_print "ADD"
             dep_header="$trimed $dep_header"
         fi
     done
@@ -335,11 +335,9 @@ function start_recursive {
                 success_print "Dependency is installing..." "\t"
                 # bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder"
                 ret=$(start_recursive "dep_recursive" "$actual_folder")
-                # is_error $? && { error_print "Can't install dependency [ $name ] <-> [ $link ]" "\t"; }
             else # ATTENTION ON PEUT COMPRESSER PEUT ETRE
                 # bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder"
                 ret=$(start_recursive "dep_recursive" "$actual_folder")
-                # is_error $? && { error_print "Can't scan dependency [ $name ] <-> [ $link ]" "\t"; }
             fi
             dep_tree="$dep_tree$ret\n"
         fi
