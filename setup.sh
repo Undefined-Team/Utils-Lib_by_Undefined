@@ -63,12 +63,12 @@ function basic_trim {
     local var="$*"
     # var=$(space_trim "$var")
     # var=${var//[$'\t\r\n']}
-    var=$(echo "$var" | tr '\n' '')
-    var=$(echo "$var" | tr '\t' '')
-    var=$(echo "$var" | tr '\r' '')
-    var=$(echo "$var" | tr ' ' '')
+    var=$(echo "$var" | tr '\n' ' ')
+    var=$(echo "$var" | tr '\t' ' ')
+    var=$(echo "$var" | tr '\r' ' ')
+    # var=$(echo "$var" | tr ' ' ' ')
     info_print "$var <--"
-    # var=$(space_trim "$var")
+    var=$(space_trim "$var")
     info_print "$var <---"
     echo -n "$var"
 }
