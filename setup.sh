@@ -86,11 +86,11 @@ function get_name_in_dep_tree {
         # eval "local toreadline=$'$line'"
         IFS=" " read -a fields <<<"$line"
         trimed=$(basic_trim "${fields[0]}")
-        success_print "line = $line"
-        success_print "--> $trimed - $2"
+        # success_print "line = $line"
+        # success_print "--> $trimed - $2"
         if [[ "$trimed" == "$2" ]] ; then
             echo -n "$line"
-            success_print "--> TRUE"
+            # success_print "--> TRUE"
             okbool=true
             break
         fi
@@ -131,6 +131,7 @@ function dep_header_add {
     IFS=" " read -a fields <<< "$2"
     for (( i = ${#fields[@]} - 1; i >= 1; --i )); do
         # trimed=$(basic_trim "${fields[i]}")
+        success_print "--- ${fields[i]} vs $1"
         if ! is_in_header "$dep_header" "${fields[i]}" ; then
             dep_header="$dep_header ${fields[i]}"
         fi
@@ -297,7 +298,7 @@ function start_recursive {
     for dep in "${dependencies[@]}"; do
         eval "$dep"
         actual_folder="${ud_lib_path}/clone/$name"
-        info_print "DEPTREE --> $dep_tree"
+        # info_print "DEPTREE --> $dep_tree"
         info_print "NAME --> $name"
         ret=$(get_name_in_dep_tree "$dep_tree" $name) # ATTENTION ""
         info_print "RET --> $ret"
@@ -333,7 +334,7 @@ function start_recursive {
     done
     ! $dep_recursive && { success_print "All done" "\t"; }
 
-    info_print "!!! DEP header $dep_header"
+    info_print "!!! $target_name DEP header  $dep_header"
 
     # 8 - Install
     ! $dep_recursive && { info_print "\n (8) Start compiling"; }
