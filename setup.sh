@@ -78,7 +78,6 @@ function is_error {
 }
 
 function get_name_in_dep_tree {
-    local okbool=false
     local trimed
     # local toreadline=""
     eval "local toread=$'$1'"
@@ -91,11 +90,12 @@ function get_name_in_dep_tree {
         if [[ "$trimed" == "$2" ]] ; then
             echo -n "$line"
             # success_print "--> TRUE"
-            okbool=true
-            break
+            # okbool=true
+            # break
+            return
         fi
     done <<< "$toread"
-    ! $okbool && { echo -n "1"; }
+    echo -n "1"
 }
 
 # function is_in_header {
