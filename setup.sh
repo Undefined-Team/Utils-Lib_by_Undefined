@@ -138,7 +138,7 @@ function dep_header_add {
         # success_print "--- $trimed vs $dep_header"
         if ! is_in_header "$dep_header" "$trimed" ; then
             # success_print "ADD"
-            dep_header="$trimed $dep_header"
+            dep_header="$dep_header $trimed"
         fi
     done
     echo -n "$dep_header"
@@ -310,7 +310,7 @@ function start_recursive {
     local actual_folder
     local ret
     local dep_lst=""
-    local dep_header=""
+    local dep_header="$target_name"
     for dep in "${dependencies[@]}"; do
         eval "$dep"
         actual_folder="${ud_lib_path}/clone/$name"
