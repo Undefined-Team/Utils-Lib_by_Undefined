@@ -17,18 +17,15 @@ BIN               =     $(addprefix $(BIN_PATH), $(addprefix $(LIBNAME)_, $(notd
 
 COMPILE           =     $(CC) $(FLAGS) $(INCLUDE)
 
-.PHONY            =     all print extract clean fclean re
+.PHONY            =     all extract clean fclean re
 
 # Colors
 G                 =     \33[1;32m
 N                 =     \033[0m
 # Colors
 
-all: print libud_$(LIBNAME).a
+all: libud_$(LIBNAME).a
 	
-print:
-	@echo "BIN: $(BIN) BINS: $(BINS) SRC: $(SRC) SRCS: $(SRCS) LIBNAME: $(LIBNAME) ARNAME: $(ARNAME) DEPNAME: $(DEPNAME) DEPHEADER: $(DEPHEADER)"
-
 libud_$(LIBNAME).a: $(BIN) extract
 ifdef ARNAME
 	@$(eval LIB_OBJ=$(shell echo *.o))
