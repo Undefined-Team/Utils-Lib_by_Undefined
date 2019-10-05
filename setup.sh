@@ -120,6 +120,7 @@ function is_in_header {
         # IFS= read -ra fields <<< "$line"
         success_print "--- ${dep_header_f[j]} == $2 ?" "\t"
         if [[ "${dep_header_f[j]}" == "$2" ]] ; then
+                success_print "--- YES !!!" "\t\t"
             true
         fi
     done
@@ -128,14 +129,14 @@ function is_in_header {
 
 function dep_header_add {
     local dep_header="$1"
-    # local trimed
+    local trimed
     # eval "local toreadline=$'$2'"
     IFS=" " read -a ret_f <<< "$2"
     for (( i = ${#ret_f[@]} - 1; i >= 1; --i )); do
-        # trimed=$(basic_trim "${ret_f[i]}")
-        success_print "--- ${ret_f[i]} vs $dep_header"
-        if ! is_in_header "$dep_header" "${ret_f[i]}" ; then
-            dep_header="$dep_header ${ret_f[i]}"
+        trimed=$(basic_trim "${ret_f[i]}")
+        success_print "--- $trimed vs $dep_header"
+        if ! is_in_header "$dep_header" "$trimed" ; then
+            dep_header="$dep_header $trimed"
         fi
     done
     echo -n "$dep_header"
