@@ -80,10 +80,10 @@ function is_error {
 function get_name_in_dep_tree {
     local okbool=false
     local trimed=""
-    local toreadline=""
+    # local toreadline=""
     eval "local toread=$'$1'"
     while IFS=$'\n' read -r line; do
-        eval "local toreadline=$'$line'"
+        # eval "local toreadline=$'$line'"
         IFS=" " read -a fields <<<"$line"
         trimed=$(basic_trim "${fields[0]}")
         success_print "line = $line"
@@ -98,26 +98,39 @@ function get_name_in_dep_tree {
     ! $okbool && { echo -n "1"; }
 }
 
+# function is_in_header {
+#     local toreadline=""
+#     eval "local toread=$'$1'"
+#     while IFS= read -r line; do
+#         eval "local toreadline=$'$line'"
+#         IFS= read -ra fields <<< "$line"
+#         if [[ "${fields[0]}" == "$2" ]] ; then
+#             return true
+#         fi
+#     done <<< "$toread"
+#     return false
+# }
+
 function is_in_header {
-    local toreadline=""
-    eval "local toread=$'$1'"
-    while IFS= read -r line; do
-        eval "local toreadline=$'$line'"
-        IFS= read -ra fields <<< "$line"
+    # local toreadline=""
+    # eval "local toread=$'$1'"
+    while IFS=" " read -a fields; do
+        # eval "local toreadline=$'$line'"
+        # IFS= read -ra fields <<< "$line"
         if [[ "${fields[0]}" == "$2" ]] ; then
             return true
         fi
-    done <<< "$toread"
+    done <<< "$1"
     return false
 }
 
 function dep_header_add {
     local dep_header="$1"
-    eval "local toreadline=$'$2'"
-    IFS= read -ra fields <<< "$2"
+    # eval "local toreadline=$'$2'"
+    IFS=" " read -a fields <<< "$2"
     for (( i = ${#fields[@]} - 1; i >= 1; --i )); do
         if ! is_in_header "$dep_header" "${fields[i]}" ; then
-            dep_header="$dep_header${fields[i]}\n"
+            dep_header="$dep_header ${fields[i]}"
         fi
     done
     echo -n "$dep_header"
