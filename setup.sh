@@ -98,7 +98,7 @@ function get_name_in_dep_tree {
     ! $okbool && { echo -n "1"; }
 }
 
-function is_in_header {.
+function is_in_header {
     local toreadline=""
     eval "local toread=$'$1'"
     while IFS=, read -r line; do
