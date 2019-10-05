@@ -114,13 +114,15 @@ function get_name_in_dep_tree {
 function is_in_header {
     # local toreadline=""
     # eval "local toread=$'$1'"
-    while IFS=" " read -a fields; do
+    IFS=" " read -a dep_header_f <<< "$1"
+    for (( j = ${#ret_f[@]} - 1; j >= 1; --j )); do
         # eval "local toreadline=$'$line'"
         # IFS= read -ra fields <<< "$line"
-        if [[ "${fields[0]}" == "$2" ]] ; then
+        success_print "--- ${dep_header_f[j]} == $2 ?" "\t"
+        if [[ "${dep_header_f[j]}" == "$2" ]] ; then
             true
         fi
-    done <<< "$1"
+    done
     false
 }
 
@@ -128,16 +130,27 @@ function dep_header_add {
     local dep_header="$1"
     # local trimed
     # eval "local toreadline=$'$2'"
-    IFS=" " read -a fields <<< "$2"
-    for (( i = ${#fields[@]} - 1; i >= 1; --i )); do
-        # trimed=$(basic_trim "${fields[i]}")
-        success_print "--- ${fields[i]} vs $1"
-        if ! is_in_header "$dep_header" "${fields[i]}" ; then
-            dep_header="$dep_header ${fields[i]}"
+    IFS=" " read -a ret_f <<< "$2"
+    for (( i = ${#ret_f[@]} - 1; i >= 1; --i )); do
+        # trimed=$(basic_trim "${ret_f[i]}")
+        success_print "--- ${ret_f[i]} vs $dep_header"
+        if ! is_in_header "$dep_header" "${ret_f[i]}" ; then
+            dep_header="$dep_header ${ret_f[i]}"
         fi
     done
     echo -n "$dep_header"
 }
+
+# function dep_header_add {
+#     local dep_header="$1"
+#     IFS=" " read -a f_dep_header <<< "$1"
+#     IFS=" " read -a f_ret <<< "$2"
+#     for (( i = ${#f_ret[@]} - 1; i >= 1; --i )); do
+#         for (( j = ${#f_dep_header[@]} - 1; j >= 1; --j )); do
+
+#         done
+#     done
+# }
 
 if [[ $1 == "help" ]] ; then
     info_print "\n How to use setup.sh ?"
