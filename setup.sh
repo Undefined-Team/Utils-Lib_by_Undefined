@@ -245,6 +245,7 @@ function start_recursive {
     local actual_folder
     local ret
     local dep_lst=""
+    local dep_tree=""
     for dep in "${dependencies[@]}"; do
         eval "$dep"
         actual_folder="${ud_lib_path}/clone/$name"
@@ -281,7 +282,7 @@ function start_recursive {
     done
     ! $dep_recursive && { success_print "All done" "\t"; }
 
-    echo $dep_header
+    info_print "$dep_tree" "---"
 
     # 8 - Install
     ! $dep_recursive && { info_print "\n (8) Start compiling"; }
