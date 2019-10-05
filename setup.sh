@@ -82,9 +82,9 @@ function get_name_in_dep_tree {
     local trimed=""
     local toreadline=""
     eval "local toread=$'$1'"
-    while read -r line; do
+    while IFS= read -r line; do
         eval "local toreadline=$'$line'"
-        IFS= read -ra fields <<<"$toreadline"
+        IFS= read -ra fields <<<"$line"
         trimed=$(basic_trim "${fields[0]}")
         # success_print "line = $trimed"
         success_print "--> $trimed - $2"
@@ -103,7 +103,7 @@ function is_in_header {
     eval "local toread=$'$1'"
     while IFS= read -r line; do
         eval "local toreadline=$'$line'"
-        IFS=, read -ra fields <<< "$toreadline"
+        IFS= read -ra fields <<< "$line"
         if [[ "${fields[0]}" == "$2" ]] ; then
             return true
         fi
@@ -114,7 +114,7 @@ function is_in_header {
 function dep_header_add {
     local dep_header="$1"
     eval "local toreadline=$'$2'"
-    IFS= read -ra fields <<< "$toreadline"
+    IFS= read -ra fields <<< "$2"
     for (( i = ${#fields[@]} - 1; i >= 1; --i )); do
         if ! is_in_header "$dep_header" "${fields[i]}" ; then
             dep_header="$dep_header${fields[i]}\n"
