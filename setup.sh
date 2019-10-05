@@ -14,9 +14,10 @@
 
 # ------------------------------------------------------------- #
 
-conf_path="conf"
 
 # 0 - Utils
+conf_path="conf"
+
 BLUE='\033[1;34m'
 GREEN='\033[1;32m'
 RED='\033[1;31m'
@@ -67,6 +68,21 @@ function csv_param_trim {
 function is_error {
     [[ "$*" != "0" ]]
 }
+
+if [[ $1 == "help" ]] ; then
+    info_print "\n How to use setup.sh ?"
+    printf "\t$GREEN 1 chmod +x setup.sh$NC\n"
+    printf "\t$GREEN 2 ./setup.sh {parameter1} {parameter2}...$NC\n"
+    info_print "\n Parameter list"
+    printf "\t$GREEN -> help (Will show you how to use setup.sh)$NC\n"
+    printf "\t$GREEN -> fclean (make fclean in current project folder before make)$NC\n"
+    printf "\t$GREEN -> libclean (remove main lib folder, then all dependencies)$NC\n"
+    printf "\t$GREEN -> noupdate (Will not check if update is needed recursively)$NC\n"
+    printf "\t$GREEN -> nodepmake (Will not make dependencies and sub dependencies)$NC\n\n"
+    exit 0
+else
+    ! $dep_recursive && { info_print "\n Use \"./setup.sh help\" to see parameters"; }
+fi
 
 # 1 - Get configuration
 ! $dep_recursive && { info_print "\n (1) Get configuration in $conf_path/conf.csv"; }
