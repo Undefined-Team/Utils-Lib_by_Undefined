@@ -43,10 +43,16 @@ function space_trim {
     echo -n "$var"
 }
 
-function csv_param_trim {
+function basic_trim {
     local var="$*"
     var=${var//[$'\t\r\n"']}
     var=$(space_trim "$var")
+    echo -n "$var" 
+}
+
+function csv_param_trim {
+    local var="$*"
+    var=$(basic_trim "$var")
     var=$(echo "$var" | sed -r 's/[ ]+/_/g')
     echo -n "$var"
 }
@@ -60,7 +66,7 @@ function get_name_in_dep_tree {
     local trimed=""
     while IFS= read -r line; do
         IFS=, read -ra fields <<<"$line"
-        trimed=$(csv_param_trim "${fields[0]}")
+        trimed=$(basic_trim "${fields[0]}")
         success_print "--> $trimed - $2"
         if [[ "$trimed" == "$2" ]] ; then
             echo -n "$line"
