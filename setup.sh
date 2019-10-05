@@ -61,10 +61,14 @@ function csv_param_trim {
 
 function basic_trim {
     local var="$*"
-    var=$(space_trim "$var")
-    var=${var//[$'\t\r\n']}
+    # var=$(space_trim "$var")
+    # var=${var//[$'\t\r\n']}
+    var=$(echo "$COMMAND" | tr '\n' '')
+    var=$(echo "$COMMAND" | tr '\t' '')
+    var=$(echo "$COMMAND" | tr '\r' '')
+    var=$(echo "$COMMAND" | tr ' ' '')
     info_print "$var <--"
-    var=$(space_trim "$var")
+    # var=$(space_trim "$var")
     info_print "$var <---"
     echo -n "$var"
 }
