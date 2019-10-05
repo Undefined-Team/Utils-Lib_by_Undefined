@@ -245,10 +245,12 @@ function start_recursive {
     local actual_folder
     local ret
     local dep_lst=""
-    local dep_tree=""
+    local dep_header=""
     for dep in "${dependencies[@]}"; do
         eval "$dep"
         actual_folder="${ud_lib_path}/clone/$name"
+        # info_print "--> $dep_tree"
+        # info_print "--> $name"
         ret=$(get_name_in_dep_tree "$dep_tree" $name) # ATTENTION ""
         # If dependency already visited
         if [[ "$ret" == "1" ]] ; then
