@@ -82,9 +82,9 @@ function get_name_in_dep_tree {
     local trimed=""
     local toreadline=""
     eval "local toread=$'$1'"
-    while IFS= read -r line; do
+    while IFS=$'\n' read -r line; do
         eval "local toreadline=$'$line'"
-        IFS= read -ra fields <<<"$line"
+        IFS=$' ' read -r fields <<<"$line"
         trimed=$(basic_trim "${fields[0]}")
         # success_print "line = $trimed"
         success_print "--> $trimed - $2"
