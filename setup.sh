@@ -43,17 +43,26 @@ function space_trim {
     echo -n "$var"
 }
 
-function basic_trim {
-    local var="$*"
-    var=${var//[$'\t\r\n"']}
-    var=$(space_trim "$var")
-    echo -n "$var" 
-}
+# function basic_trim {
+#     local var="$*"
+#     var=${var//[$'\t\r\n"']}
+#     var=$(space_trim "$var")
+#     echo -n "$var" 
+# }
 
 function csv_param_trim {
     local var="$*"
-    var=$(basic_trim "$var")
+    # var=$(basic_trim "$var")
+    var=${var//[$'\t\r\n"']}
+    var=$(space_trim "$var")
     var=$(echo "$var" | sed -r 's/[ ]+/_/g')
+    echo -n "$var"
+}
+
+function basic_trim {
+    local var="$*"
+    var=${var//[$'\t\r\n']}
+    var=$(space_trim "$var")
     echo -n "$var"
 }
 
