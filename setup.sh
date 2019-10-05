@@ -138,7 +138,7 @@ function dep_header_add {
         success_print "--- $trimed vs $dep_header"
         if ! is_in_header "$dep_header" "$trimed" ; then
             success_print "ADD"
-            dep_header="$dep_header $trimed"
+            dep_header="$trimed $dep_header"
         fi
     done
     echo -n "$dep_header"
