@@ -132,7 +132,7 @@ function dep_header_add {
     local dep_header="$1"
     local trimed
     # eval "local toreadline=$'$2'"
-    IFS=" " read -a ret_f <<< $(basic_trim "$2")
+    IFS=" " read -a ret_f <<< "$2"
     for (( i = ${#ret_f[@]} - 1; i >= 0; --i )); do
         trimed=$(basic_trim "${ret_f[i]}")
         success_print "--- $trimed vs $dep_header"
@@ -350,7 +350,7 @@ function start_recursive {
     done
     ! $dep_recursive && { success_print "All done" "\t"; }
 
-    info_print "!!! $target_name DEP header  $dep_header"
+    info_print "!!! $target_name DEP header |$dep_header|"
 
     # 8 - Install
     ! $dep_recursive && { info_print "\n (8) Start compiling"; }
