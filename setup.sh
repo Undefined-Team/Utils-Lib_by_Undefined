@@ -302,7 +302,7 @@ function start_recursive {
     # 8 - Install
     ! $dep_recursive && { info_print "\n (8) Start compiling"; }
     # Copy headers in main lib folder
-    if [ ! -f "$ud_lib_path"/include/ud_"$target_name".h ] || [ diff "$location"/res/include/ud_"$target_name".h "$ud_lib_path"/include/ud_"$target_name".h != "" ] ; then
+    if [ ! -f "$ud_lib_path"/include/ud_"$target_name".h ] || [ $(diff "$location"/res/include/ud_"$target_name".h "$ud_lib_path"/include/ud_"$target_name".h) != "" ] ; then
         cp "$location"/res/include/* "$ud_lib_path"/include/
         is_error $? && { error_print "Copy headers files to [ $ud_lib_path/include/ ] failed"; }
     fi
