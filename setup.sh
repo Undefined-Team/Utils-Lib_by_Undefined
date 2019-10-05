@@ -60,12 +60,12 @@ function get_name_in_dep_tree {
     while IFS= read -r line; do
         IFS=, read -ra fields <<<"$line"
         if [[ "${fields[0]}" == "$2" ]] ; then
-            echo "$line"
+            echo -n "$line"
             okbool=true
             break
         fi
     done <<< "$1"
-    ! $okbool && { echo "1"; }
+    ! $okbool && { echo -n "1"; }
 }
 
 function is_in_header {
@@ -86,7 +86,7 @@ function dep_header_add {
             dep_header="$dep_header${fields[i]}\n"
         fi
     done
-    echo "$dep_header"
+    echo -n "$dep_header"
 }
 
 
@@ -307,7 +307,7 @@ function start_recursive {
         fi
         printf "\n"
     fi
-    return "$target_name $dep_lst\n"
+    echo "$target_name $dep_lst"
 }
 
 start_recursive $@
