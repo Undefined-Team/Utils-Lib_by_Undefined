@@ -273,7 +273,7 @@ function start_recursive {
                 ret=$(start_recursive "dep_recursive" "$actual_folder")
                 # is_error $? && { error_print "Can't scan dependency [ $name ] <-> [ $link ]" "\t"; }
             fi
-            dep_tree=$dep_tree$ret
+            dep_tree="$dep_tree$ret"
         fi
         dep_header=$(dep_header_add "$dep_header" "$ret")
         dep_lst="$name $dep_lst"
