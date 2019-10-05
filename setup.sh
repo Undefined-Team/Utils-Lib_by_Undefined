@@ -115,7 +115,7 @@ function is_in_header {
     # local toreadline=""
     # eval "local toread=$'$1'"
     IFS=" " read -a dep_header_f <<< "$1"
-    for (( j = ${#ret_f[@]} - 1; j >= 1; --j )); do
+    for (( j = ${#ret_f[@]} - 1; j >= 0; --j )); do
         # eval "local toreadline=$'$line'"
         # IFS= read -ra fields <<< "$line"
         success_print "--- ${dep_header_f[j]} == $2 ?" "\t"
@@ -133,7 +133,7 @@ function dep_header_add {
     local trimed
     # eval "local toreadline=$'$2'"
     IFS=" " read -a ret_f <<< "$2"
-    for (( i = ${#ret_f[@]} - 1; i >= 1; --i )); do
+    for (( i = ${#ret_f[@]} - 1; i >= 0; --i )); do
         trimed=$(basic_trim "${ret_f[i]}")
         success_print "--- $trimed vs $dep_header"
         if ! is_in_header "$dep_header" "$trimed" ; then
