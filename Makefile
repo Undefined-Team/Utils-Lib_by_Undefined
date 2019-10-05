@@ -47,7 +47,7 @@ ifdef ARNAME
 endif
 
 $(BIN_PATH)$(LIBNAME)_%.o: $(SRC_PATH)%.c $(DEPHEADER)
-	@echo $(DEPHEADER)
+	@echo "dep $(DEPHEADER)"
 	@mkdir -p $(BIN_PATH) || true
 	@echo -n "\t$(G)Success: "
 	$(COMPILE) $< $(DEPNAME) -o $@ -c
