@@ -126,13 +126,13 @@ function is_in_header {
 
 function dep_header_add {
     local dep_header="$1"
-    local trimed
+    # local trimed
     # eval "local toreadline=$'$2'"
     IFS=" " read -a fields <<< "$2"
     for (( i = ${#fields[@]} - 1; i >= 1; --i )); do
-        trimed=$(basic_trim "${fields[i]}")
-        if ! is_in_header "$dep_header" "$trimed" ; then
-            dep_header="$dep_header $trimed"
+        # trimed=$(basic_trim "${fields[i]}")
+        if ! is_in_header "$dep_header" "${fields[i]}" ; then
+            dep_header="$dep_header ${fields[i]}"
         fi
     done
     echo -n "$dep_header"
@@ -333,7 +333,7 @@ function start_recursive {
     done
     ! $dep_recursive && { success_print "All done" "\t"; }
 
-    info_print "!!! DEP TREE $dep_tree"
+    info_print "!!! DEP header $dep_header"
 
     # 8 - Install
     ! $dep_recursive && { info_print "\n (8) Start compiling"; }
