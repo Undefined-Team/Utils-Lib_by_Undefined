@@ -369,9 +369,9 @@ function start_recursive {
     is_error $? && { error_print "Copy headers files to [ $ud_lib_path/include/ ] failed"; }
     # Compil
     if ! $dep_recursive ; then
-        make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name" >&2
+        make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name" DEPHEADER="$dep_header" >&2
     else
-        make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name" >&2
+        make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name" DEPHEADER="$dep_header" >&2
     fi
     is_error $? && { error_print "Compilation failed"; }
     # Copy lib in main lib folder
