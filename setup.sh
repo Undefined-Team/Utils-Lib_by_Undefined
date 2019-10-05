@@ -305,6 +305,7 @@ function start_recursive {
     cp "$location"/res/include/* "$ud_lib_path"/include/
     is_error $? && { error_print "Copy headers files to [ $ud_lib_path/include/ ] failed"; }
     # Compil
+    echo -n $dep_header
     if ! $dep_recursive ; then
         make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name" DEPHEADER="$dep_header" >&2
     else
