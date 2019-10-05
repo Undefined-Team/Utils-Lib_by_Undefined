@@ -315,7 +315,7 @@ function start_recursive {
         fi
         printf "\n"
     fi
-    echo "$target_name $dep_lst"
+    echo "$target_name $dep_lst\n"
 }
 
 start_recursive $@
