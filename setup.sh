@@ -286,11 +286,11 @@ function start_recursive {
                 # Install dependency
                 success_print "Dependency is installing..." "\t"
                 ret=$(start_recursive "dep_recursive" "$actual_folder")
-                is_error $? && { error_print "Can't install dependency [ $name ] <-> [ $link ]" "\t"; }
+                # is_error $? && { error_print "Can't install dependency [ $name ] <-> [ $link ]" "\t"; }
             else # ATTENTION ON PEUT COMPRESSER PEUT ETRE
                 ret=$(start_recursive "dep_recursive" "$actual_folder")
-                is_error $? && { error_print "Can't scan dependency [ $name ] <-> [ $link ]" "\t"; }
             fi
+            is_error $? && { error_print "Can't scan dependency [ $name ] <-> [ $link ]" "\t"; }
             dep_tree="$dep_tree$ret\n"
         fi
         dep_header=$(dep_header_add "$dep_header" "$ret")
@@ -312,11 +312,12 @@ function start_recursive {
     # Compil
     if ! $dep_recursive ; then
         make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name" DEPHEADER="$dep_header" >&2
-        is_error $? && { error_print "Compilation failed"; }
+        # is_error $? && { error_print "Compilation failed"; }
     else
         make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name" DEPHEADER="$dep_header" >&2
-        is_error $? && { error_print "Compilation failed"; }
+        # is_error $? && { error_print "Compilation failed"; }
     fi
+    is_error $? && { error_print "Compilation failed"; }
     # Copy lib in main lib folder
     cp "$location"/*.a "$ud_lib_path"/lib/
     is_error $? && { error_print "Copy compiled files to [ $ud_lib_path/lib/ ] failed"; }
