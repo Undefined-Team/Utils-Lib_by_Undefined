@@ -132,7 +132,7 @@ function dep_header_add {
     local dep_header="$1"
     local trimed
     # eval "local toreadline=$'$2'"
-    IFS=" " read -a ret_f <<< "$2"
+    IFS=" " read -a ret_f <<< $(basic_trim "$2")
     for (( i = ${#ret_f[@]} - 1; i >= 0; --i )); do
         trimed=$(basic_trim "${ret_f[i]}")
         success_print "--- $trimed vs $dep_header"
