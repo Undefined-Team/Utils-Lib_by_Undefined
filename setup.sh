@@ -57,10 +57,14 @@ function is_error {
 
 function get_name_in_dep_tree {
     local okbool=false
+    local trimed=""
     while IFS= read -r line; do
         IFS=, read -ra fields <<<"$line"
-        if [[ "${fields[0]}" == "$2" ]] ; then
+        trimed=$(csv_param_trim "${fields[0]}")
+        # success_print "--> $trimed - $2"
+        if [[ "$trimed" == "$2" ]] ; then
             echo -n "$line"
+            # success_print "--> TRUE"
             okbool=true
             break
         fi
@@ -252,6 +256,7 @@ function start_recursive {
         # info_print "--> $dep_tree"
         # info_print "--> $name"
         ret=$(get_name_in_dep_tree "$dep_tree" $name) # ATTENTION ""
+        # info_print "--> $ret"
         # If dependency already visited
         if [[ "$ret" == "1" ]] ; then
             # Check if dependency need to be installed
