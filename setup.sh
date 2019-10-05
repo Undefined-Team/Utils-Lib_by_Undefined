@@ -79,7 +79,7 @@ function is_error {
 
 function get_name_in_dep_tree {
     local okbool=false
-    local trimed=""
+    local trimed
     # local toreadline=""
     eval "local toread=$'$1'"
     while IFS=$'\n' read -r line; do
@@ -126,16 +126,17 @@ function is_in_header {
 
 function dep_header_add {
     local dep_header="$1"
+    local trimed
     # eval "local toreadline=$'$2'"
     IFS=" " read -a fields <<< "$2"
     for (( i = ${#fields[@]} - 1; i >= 1; --i )); do
-        if ! is_in_header "$dep_header" "${fields[i]}" ; then
-            dep_header="$dep_header ${fields[i]}"
+        trimed=$(basic_trim "${fields[i]}")
+        if ! is_in_header "$dep_header" "$trimed" ; then
+            dep_header="$dep_header $trimed"
         fi
     done
     echo -n "$dep_header"
 }
-
 
 if [[ $1 == "help" ]] ; then
     info_print "\n How to use setup.sh ?"
