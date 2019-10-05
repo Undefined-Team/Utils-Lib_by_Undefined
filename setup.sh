@@ -56,12 +56,16 @@ function is_error {
 }
 
 function get_name_in_dep_tree {
+    local okbool=false
     while IFS= read -r line; do
         IFS=, read -ra fields <<<"$line"
         if [[ "${fields[0]}" == "$2" ]] ; then
-            return "$line"
+            echo "$line"
+            okbool=true
+            break
         fi
     done <<< "$1"
+    okbool && { echo "1"; }
 }
 
 function is_in_header {
@@ -82,7 +86,7 @@ function dep_header_add {
             dep_header="$dep_header${fields[i]}\n"
         fi
     done
-    return "$dep_header"
+    echo "$dep_header"
 }
 
 
@@ -277,7 +281,7 @@ function start_recursive {
     done
     ! $dep_recursive && { success_print "All done" "\t"; }
 
-    echo dep_header
+    echo $dep_header
 
     # 8 - Install
     ! $dep_recursive && { info_print "\n (8) Start compiling"; }
@@ -307,4 +311,4 @@ function start_recursive {
 }
 
 start_recursive $@
-echo dep_tree
+echo $dep_tree
