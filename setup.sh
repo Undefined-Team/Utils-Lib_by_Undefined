@@ -286,8 +286,10 @@ function start_recursive {
                 # Install dependency
                 success_print "Dependency is installing..." "\t"
                 ret=$(start_recursive "dep_recursive" "$actual_folder")
+                is_error $? && { error_print "Can't install dependency [ $name ] <-> [ $link ]" "\t"; }
             else # ATTENTION ON PEUT COMPRESSER PEUT ETRE
                 ret=$(start_recursive "dep_recursive" "$actual_folder")
+                is_error $? && { error_print "Can't scan dependency [ $name ] <-> [ $link ]" "\t"; }
             fi
             dep_tree="$dep_tree$ret\n"
         fi
