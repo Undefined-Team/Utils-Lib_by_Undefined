@@ -80,9 +80,11 @@ function is_error {
 function get_name_in_dep_tree {
     local okbool=false
     local trimed=""
+    local toreadline=""
     eval "local toread=$'$1'"
     while read -r line; do
-        IFS=, read -ra fields <<<"$line"
+        eval "local toreadline=$'$line'"
+        IFS=, read -ra fields <<<"$toreadline"
         trimed=$(basic_trim "${fields[0]}")
         # success_print "line = $trimed"
         success_print "--> $trimed - $2"
@@ -96,10 +98,12 @@ function get_name_in_dep_tree {
     ! $okbool && { echo -n "1"; }
 }
 
-function is_in_header {
+function is_in_header {.
+    local toreadline=""
     eval "local toread=$'$1'"
     while IFS=, read -r line; do
-        IFS=, read -ra fields <<< "$line"
+        eval "local toreadline=$'$line'"
+        IFS=, read -ra fields <<< "$toreadline"
         if [[ "${fields[0]}" == "$2" ]] ; then
             return true
         fi
@@ -109,7 +113,8 @@ function is_in_header {
 
 function dep_header_add {
     local dep_header="$1"
-    IFS=, read -ra fields <<< "$2"
+    eval "local toreadline=$'$2'"
+    IFS=, read -ra fields <<< "$toreadline"
     for (( i = ${#fields[@]} - 1; i >= 1; --i )); do
         if ! is_in_header "$dep_header" "${fields[i]}" ; then
             dep_header="$dep_header${fields[i]}\n"
