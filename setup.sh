@@ -323,7 +323,7 @@ function start_recursive {
         fi
         printf "\n"
     fi
-    ! $dep_recursive && { echo "$target_name $dep_lst"; }
+    $dep_recursive && { echo "$target_name $dep_lst"; }
 }
 
 start_recursive $@
