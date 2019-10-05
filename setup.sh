@@ -84,7 +84,7 @@ function get_name_in_dep_tree {
     while read -r line; do
         IFS=, read -ra fields <<<"$line"
         trimed=$(basic_trim "${fields[0]}")
-        success_print "line = $trimed"
+        # success_print "line = $trimed"
         success_print "--> $trimed - $2"
         if [[ "$trimed" == "$2" ]] ; then
             echo -n "$line"
@@ -278,10 +278,10 @@ function start_recursive {
     for dep in "${dependencies[@]}"; do
         eval "$dep"
         actual_folder="${ud_lib_path}/clone/$name"
-        info_print "--> $dep_tree"
-        info_print "--> $name"
+        info_print "DEPTREE --> $dep_tree"
+        info_print "NAME --> $name"
         ret=$(get_name_in_dep_tree "$dep_tree" $name) # ATTENTION ""
-        info_print "--> $ret"
+        info_print "RET --> $ret"
         # If dependency already visited
         if [[ "$ret" == "1" ]] ; then
             # Check if dependency need to be installed
