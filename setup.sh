@@ -80,7 +80,7 @@ function is_error {
 function get_name_in_dep_tree {
     local okbool=false
     local trimed=""
-    while IFS= read -r line; do
+    while IFS=, read -r line; do
         IFS=, read -ra fields <<<"$line"
         trimed=$(basic_trim "${fields[0]}")
         success_print "--> $trimed - $2"
@@ -95,7 +95,7 @@ function get_name_in_dep_tree {
 }
 
 function is_in_header {
-    while IFS= read -r line; do
+    while IFS=, read -r line; do
         IFS=, read -ra fields <<< "$line"
         if [[ "${fields[0]}" == "$2" ]] ; then
             return true
