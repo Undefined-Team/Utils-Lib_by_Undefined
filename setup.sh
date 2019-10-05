@@ -55,6 +55,37 @@ function is_error {
     [[ "$*" != "0" ]]
 }
 
+function get_name_in_dep_tree {
+    while IFS= read -r line; do
+        IFS=, read -ra fields <<<"$line"
+        if [[ "${fields[0]}" == "$2" ]] ; then
+            return "$line"
+        fi
+    done <<< "$1"
+}
+
+function is_in_header {
+    while IFS= read -r line; do
+        IFS=, read -ra fields <<< "$line"
+        if [[ "${fields[0]}" == "$2" ]] ; then
+            return true
+        fi
+    done <<< "$1"
+    return false
+}
+
+function dep_header_add {
+    local dep_header="$1"
+    IFS=, read -ra fields <<< "$2"
+    for (( i = ${#fields[@]} - 1; i >= 1; --i )); do
+        if ! is_in_header "$dep_header" "${fields[i]}" ; then
+            dep_header="$dep_header${fields[i]}\n"
+        fi
+    done
+    return "$dep_header"
+}
+
+
 if [[ $1 == "help" ]] ; then
     info_print "\n How to use setup.sh ?"
     printf "\t$GREEN 1 chmod +x setup.sh$NC\n"
@@ -73,6 +104,7 @@ fi
 has_set_env=false
 noupdate=""
 nodepmake=""
+dep_tree=""
 
 function start_recursive {
 
@@ -202,37 +234,50 @@ function start_recursive {
 
     # 7 - Dependencies
     ! $dep_recursive && { info_print "\n (7) Check if need install/update dependencies"; }
+    local link
+    local name
     local make_dep_name=""
     local make_ar_name=""
     local actual_folder
+    local ret
+    local dep_lst=""
     for dep in "${dependencies[@]}"; do
         eval "$dep"
         actual_folder="${ud_lib_path}/clone/$name"
-        # Check if dependency need to be installed
-        if [ ! -d "$actual_folder" ]; then
-            # Download dependency
-            info_print "[ $name ] dependency need to be installed" "\t"
-            git clone "$link" "$actual_folder" > /dev/null 2>&1
-            is_error $? && { error_print "Can't download dependency [ $name ] <-> [ $link ]" "\t"; }
-            success_print "Dependency was downloaded" "\t"
-            # Chmod dependency
-            chmod +x "$actual_folder/setup.sh" > /dev/null 2>&1
-            is_error $? && { error_print "Can't chmod dependency" "\t"; }
-            success_print "Dependency was chmoded" "\t"
-            # Install dependency
-            success_print "Dependency is installing..." "\t"
-            # bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder"
-            start_recursive "dep_recursive" "$actual_folder"
-            # is_error $? && { error_print "Can't install dependency [ $name ] <-> [ $link ]" "\t"; }
-        else
-            # bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder"
-            start_recursive "dep_recursive" "$actual_folder"
-            # is_error $? && { error_print "Can't scan dependency [ $name ] <-> [ $link ]" "\t"; }
+        ret=$(get_name_in_dep_tree "$dep_tree" $name) # ATTENTION ""
+        # If dependency already visited
+        if [[ "$ret" == "1" ]] ; then
+            # Check if dependency need to be installed
+            if [ ! -d "$actual_folder" ]; then
+                # Download dependency
+                info_print "[ $name ] dependency need to be installed" "\t"
+                git clone "$link" "$actual_folder" > /dev/null 2>&1
+                is_error $? && { error_print "Can't download dependency [ $name ] <-> [ $link ]" "\t"; }
+                success_print "Dependency was downloaded" "\t"
+                # Chmod dependency
+                chmod +x "$actual_folder/setup.sh" > /dev/null 2>&1
+                is_error $? && { error_print "Can't chmod dependency" "\t"; }
+                success_print "Dependency was chmoded" "\t"
+                # Install dependency
+                success_print "Dependency is installing..." "\t"
+                # bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder"
+                ret=$(start_recursive "dep_recursive" "$actual_folder")
+                # is_error $? && { error_print "Can't install dependency [ $name ] <-> [ $link ]" "\t"; }
+            else # ATTENTION ON PEUT COMPRESSER PEUT ETRE
+                # bash "$actual_folder/setup.sh" "dep_recursive" "$actual_folder"
+                ret=$(start_recursive "dep_recursive" "$actual_folder")
+                # is_error $? && { error_print "Can't scan dependency [ $name ] <-> [ $link ]" "\t"; }
+            fi
+            dep_tree=$dep_tree$ret
         fi
+        dep_header=$(dep_header_add "$dep_header" "$ret")
+        dep_lst="$name $dep_lst"
         make_dep_name="$make_dep_name -lud_${name//'"'}"
         make_ar_name="$make_ar_name $ud_lib_path/lib/libud_${name//'"'}.a"
     done
     ! $dep_recursive && { success_print "All done" "\t"; }
+
+    echo dep_header
 
     # 8 - Install
     ! $dep_recursive && { info_print "\n (8) Start compiling"; }
@@ -258,7 +303,8 @@ function start_recursive {
         fi
         printf "\n"
     fi
-    return "0"
+    return "$target_name $dep_lst\n"
 }
 
 start_recursive $@
+echo dep_tree
