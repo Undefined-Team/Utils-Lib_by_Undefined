@@ -149,7 +149,7 @@ function dep_header_format {
     IFS=" " read -a dep_header_f <<< "$1"
     for (( i = ${#dep_header_f[@]} - 1; i >= 0; --i )); do
         trimed=$(basic_trim "${dep_header_f[i]}")
-        dep_header="$2/${dep_header_f[i]}.h $dep_header"
+        dep_header="$2/include/${dep_header_f[i]}.h $dep_header"
     done
     echo -n "$dep_header"
 }
