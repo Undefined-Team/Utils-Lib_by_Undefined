@@ -65,7 +65,7 @@ function get_name_in_dep_tree {
             break
         fi
     done <<< "$1"
-    okbool && { echo "1"; }
+    $okbool && { echo "1"; }
 }
 
 function is_in_header {
