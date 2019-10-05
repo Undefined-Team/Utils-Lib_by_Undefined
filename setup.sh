@@ -86,7 +86,7 @@ function get_name_in_dep_tree {
         eval "local toreadline=$'$line'"
         IFS=" " read -a fields <<<"$line"
         trimed=$(basic_trim "${fields[0]}")
-        success_print "line = $trimed"
+        success_print "line = $line"
         success_print "--> $trimed - $2"
         if [[ "$trimed" == "$2" ]] ; then
             echo -n "$line"
