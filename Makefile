@@ -27,7 +27,7 @@ N                 =     \033[0m
 all: libud_$(LIBNAME).a
 	@echo > /dev/null
 
-libud_$(LIBNAME).a: $(BIN) extract $(INCLUDE_PATH)ud_$(LIBNAME).h
+libud_$(LIBNAME).a: $(BIN) extract
 ifdef ARNAME
 	@$(eval LIB_OBJ=$(shell echo *.o))
 endif
@@ -46,10 +46,10 @@ ifdef ARNAME
 	done
 endif
 
-$(BIN_PATH)$(LIBNAME)_%.o: $(SRC_PATH)%.c
+$(BIN_PATH)$(LIBNAME)_%.o: $(SRC_PATH)%.c $(INCLUDE_PATH)ud_$(LIBNAME).h
 	@mkdir -p $(BIN_PATH) || true
 	@echo -n "\t$(G)Success: "
-	$(COMPILE) $^ $(DEPNAME) -o $@ -c
+	$(COMPILE) $< $(DEPNAME) -o $@ -c
 	@echo -n "$(N)"
 
 clean:
