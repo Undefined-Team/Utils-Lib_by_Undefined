@@ -144,6 +144,16 @@ function dep_header_add {
     echo -n "$dep_header"
 }
 
+function dep_header_format {
+    local dep_header=""
+    IFS=" " read -a ret_f <<< "$1"
+    for (( i = ${#dep_header_f[@]} - 1; i >= 0; --i )); do
+        trimed=$(basic_trim "${dep_header_f[i]}")
+        dep_header="$2/${dep_header_f[i]}.h $dep_header"
+    done
+    echo -n "$dep_header"
+}
+
 # function dep_header_add {
 #     local dep_header="$1"
 #     IFS=" " read -a f_dep_header <<< "$1"
@@ -315,9 +325,9 @@ function start_recursive {
         eval "$dep"
         actual_folder="${ud_lib_path}/clone/$name"
         # info_print "DEPTREE --> $dep_tree"
-        info_print "NAME --> $name"
+        # info_print "NAME --> $name"
         ret=$(get_name_in_dep_tree "$dep_tree" $name) # ATTENTION ""
-        info_print "RET --> $ret"
+        # info_print "RET --> $ret"
         # If dependency already visited
         if [[ "$ret" == "1" ]] ; then
             # Check if dependency need to be installed
@@ -349,6 +359,8 @@ function start_recursive {
     ! $dep_recursive && { success_print "All done" "\t"; }
 
     info_print "!!! $target_name DEP header |$dep_header|"
+    dep_header=$(dep_header_format "$dep_header" "$ud_lib_path")
+    info_print "!!! $target_name FDEP header |$dep_header|"
 
     # 8 - Install
     ! $dep_recursive && { info_print "\n (8) Start compiling"; }
