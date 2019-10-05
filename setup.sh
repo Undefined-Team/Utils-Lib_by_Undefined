@@ -61,6 +61,7 @@ function csv_param_trim {
 
 function basic_trim {
     local var="$*"
+    var=$(space_trim "$var")
     var=${var//[$'\t\r\n']}
     var=$(space_trim "$var")
     echo -n "$var"
