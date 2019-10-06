@@ -194,6 +194,7 @@ function start_recursive {
         if [[ "$gitret" != "Already up to date." ]] && ! is_error $? ; then
             $dep_recursive && { info_print "[ $target_name ] need to be updated" "\t"; }
             success_print "Files updated" "\t"
+        fi
     else
         ! $dep_recursive && { success_print "No update parameter detected" "\t"; }
     fi
