@@ -305,7 +305,7 @@ function start_recursive {
     # 8 - Install
     ! $dep_recursive && { info_print "\n (8) Start compiling"; }
     # Copy headers in main lib folder
-    if [ ! -f "$ud_lib_path"/include/ud_"$target_name".h ] || [ $(diff "$location"/res/include/ud_"$target_name".h "$ud_lib_path"/include/ud_"$target_name".h ; echo "$?") != "0" ] > /dev/null 2>&1 ; then
+    if [ ! -f "$ud_lib_path"/include/ud_"$target_name".h ] || [ $(diff "$location"/res/include/ud_"$target_name".h "$ud_lib_path"/include/ud_"$target_name".h) != "" ] ; then
         info_print "CP FILE"
         cp "$location"/res/include/* "$ud_lib_path"/include/
         is_error $? && { error_print "Copy headers files to [ $ud_lib_path/include/ ] failed"; }
@@ -333,3 +333,8 @@ function start_recursive {
 }
 
 start_recursive $@
+# diff setup.sh setup.sh
+# echo $?
+# if [[ $(diff setup.sh setup.sh) != "" ]] ; then
+    # echo rentre
+# fi
