@@ -189,6 +189,7 @@ function start_recursive {
     ! $dep_recursive && { info_print "\n (3) Check if need update"; }
     if [[ "$noupdate" != "noupdate" ]] ; then
         (! gitret=$(echo $(git -C "$location" pull)) && { error_print "Can't git pull" "\t"; }) > /dev/null 2>&1
+        info_print "$?: $gitret"
         if [[ "$gitret" != "Already up to date." && $? -eq 0 ]] ; then
             $dep_recursive && { info_print "[ $target_name ] need to be updated" "\t"; }
             success_print "Files updated" "\t"
