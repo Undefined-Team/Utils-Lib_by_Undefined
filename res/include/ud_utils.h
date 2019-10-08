@@ -7,7 +7,7 @@
 #include <sys/time.h>
 
 // Macro
-# define UD_ARGS_LEN(type, ...)     ({ size_t len = (sizeof((type[]){__VA_ARGS__})/sizeof(type)); len; })
+# define UD_ARGS_LEN(type, ...)     (sizeof((type[]){__VA_ARGS__})/sizeof(type))
 # define UD_UT_SPACE_NBR		    4
 # define UD_UT_COLOR_N              "\x1b[0m"
 # define UD_UT_COLOR_U              "\x1b[4m"
