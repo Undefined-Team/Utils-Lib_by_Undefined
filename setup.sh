@@ -128,8 +128,8 @@ else
 fi
 
 has_set_env=false
-noupdate=""
-nodepmake=""
+noupdate=false
+nodepmake=false
 dep_tree=""
 
 function start_recursive {
@@ -178,16 +178,16 @@ function start_recursive {
             !(rm -rf "$ud_lib_path") && { error_print "Can't remove main lib folder" "\t"; }
             success_print "Main lib folder removed" "\t"
         elif [[ $pparam == "noupdate" ]] ; then
-            noupdate="noupdate"
+            noupdate=true
         elif [[ $pparam == "nodepmake" ]] ; then
-            nodepmake="nodepmake"
+            nodepmake=true
         fi
     done
     ! $dep_recursive && { success_print "All done" "\t"; }
 
     # 3 - Check update
     ! $dep_recursive && { info_print "\n (3) Check if need update"; }
-    if [[ "$noupdate" != "noupdate" ]] ; then
+    if ! $noupdate ; then
         gitret=$(git -C "$location" pull 2>&1) > /dev/null
         is_error $? && { error_print "Can't git pull" "\t"; }
         if [[ "$gitret" != "Already up to date." ]] && ! is_error $? ; then
@@ -287,8 +287,7 @@ function start_recursive {
                 # Install dependency
                 success_print "Dependency is installing..." "\t"
                 ret=$(start_recursive "dep_recursive" "$actual_folder")
-                # is_error $? && { error_print "Can't install dependency [ $name ] <-> [ $link ]" "\t"; }
-            else # ATTENTION ON PEUT COMPRESSER PEUT ETRE
+            elif ! $nodepmake ; then
                 ret=$(start_recursive "dep_recursive" "$actual_folder")
             fi
             is_error $? && { error_print "Can't scan dependency [ $name ] <-> [ $link ]" "\t"; }
@@ -305,8 +304,7 @@ function start_recursive {
     # 8 - Install
     ! $dep_recursive && { info_print "\n (8) Start compiling"; }
     # Copy headers in main lib folder
-    if [ ! -f "$ud_lib_path"/include/ud_"$target_name".h ] || [ $(diff "$location"/res/include/ud_"$target_name".h "$ud_lib_path"/include/ud_"$target_name".h ; echo "$?") != "0" ] > /dev/null 2>&1 ; then
-        info_print "CP FILE"
+    if [ ! -f "$ud_lib_path"/include/ud_"$target_name".h ] || [[ $(diff "$location"/res/include/ud_"$target_name".h "$ud_lib_path"/include/ud_"$target_name".h) != "" ]] ; then
         cp "$location"/res/include/* "$ud_lib_path"/include/
         is_error $? && { error_print "Copy headers files to [ $ud_lib_path/include/ ] failed"; }
     fi
@@ -314,7 +312,7 @@ function start_recursive {
     if ! $dep_recursive ; then
         make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name" DEPHEADER="$dep_header" >&2
     else
-        make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name" DEPHEADER="$dep_header" >&2
+        make -C "$location" --no-print- LIBNAME="$target_name" DEPNAME="$make_dep_name" ARNAME="$make_ar_name" DEPHEADER="$dep_header" > /dev/null 2>&1
     fi
     is_error $? && { error_print "Compilation failed"; }
     # Copy lib in main lib folder
