@@ -42,6 +42,22 @@
 
 # define ud_ut_count                register size_t
 
+# define ud_ut_array(type, ...) ({ type *new_arr; type in_val[] = {__VA_ARGS__}; size_t len = sizeof(in_val) / sizeof(type); new_arr = ud_ut_malloc(len * sizeof(type)); type *p_new_arr = new_arr; for (ud_ut_count i = 0; i < len; ++i, ++p_new_arr) *p_new_arr = in_val[i]; new_arr; })
+/*
+# define ud_array(type, ...) \
+    ({ \
+        type *new_arr; \
+        type in_val[] = {__VA_ARGS__}; \
+        size_t len = sizeof(in_val) / sizeof(type); \
+        new_arr = ud_ut_malloc(len * sizeof(type)); \
+        type *p_new_arr = new_arr;
+        for (ud_ut_count i = 0; i < len; ++i, ++p_new_arr) *p_new_arr = in_val[i]; \
+        new_arr; \
+    })
+
+    // <<< If need to modify ud_arr_set >>>
+*/ 
+
 // Structures
 typedef enum                        {false,true} ud_bool;
 
