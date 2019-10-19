@@ -14,6 +14,11 @@
 
 # ------------------------------------------------------------- #
 
+if [ "$(uname)" == "Darwin" ]; then
+    sedopt="-E"       
+elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+    sedopt="-r"
+fi
 
 # 0 - Utils
 BLUE='\033[1;34m'
@@ -47,7 +52,7 @@ function csv_param_trim {
     local var="$*"
     var=${var//[$'\t\r\n"']}
     var=$(space_trim "$var")
-    var=$(echo "$var" | sed -r 's/[ ]+/_/g')
+    var=$(echo "$var" | sed $sedopt 's/[ ]+/_/g')
     echo -n "$var"
 }
 
