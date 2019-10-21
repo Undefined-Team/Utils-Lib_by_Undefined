@@ -25,6 +25,7 @@
 
 # define ud_ut_free(x)              ud_ut_free_ctr((void**)&(x))
 # define UD_UT_PROT_MALLOC(x)       if (!(x)) {return NULL;}
+# define UD_UT_PROT_MALLOC_VOID(x)	if (!(x)) {return ;}
 # define UD_UT_PROT_ARR_TYPE(x, y)  if (x != y) {return NULL;}
 
 # define ud_ut_error(...)           (fprintf(stderr, "%s%s%s[ERROR]%s %s%s: ", UD_UT_COLOR_B, UD_UT_COLOR_U, UD_UT_COLOR_ERR_1, UD_UT_COLOR_N, UD_UT_COLOR_ERR_2, __func__), \
