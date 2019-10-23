@@ -70,6 +70,23 @@
         new_arr; \
     })
 
+# define ud_ut_sarray_null(type, ...) \
+    ({ \
+        type *new_arr; \
+        type in_val[] = {__VA_ARGS__}; \
+        type *in_tmp = in_val; \
+        size_t len = sizeof(in_val) / sizeof(type); \
+        if (len) \
+        { \
+            new_arr = ud_ut_malloc((len + 1) * sizeof(type)); \
+            type *p_new_arr = new_arr; \
+            for (ud_ut_count i = 0; i < len; ++i, ++p_new_arr, ++in_tmp) *p_new_arr = ud_str_dup(*in_tmp); \
+            *p_new_arr = NULL; \
+        } \
+        else new_arr = NULL; \
+        new_arr; \
+    })
+
 // Structures
 typedef enum                        {false,true} ud_bool;
 
