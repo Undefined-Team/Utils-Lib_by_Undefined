@@ -8,6 +8,7 @@
 
 // Macro
 # define UD_ARGS_LEN(type, ...)     (sizeof((type[]){__VA_ARGS__})/sizeof(type))
+# define UD_UT_STATICA_LEN(arr)     ({ size_t ret = (arr) ? sizeof(arr)/sizeof(*arr) : 0; ret; })
 # define UD_UT_SPACE_NBR		    4
 # define UD_UT_COLOR_N              "\x1b[0m"
 # define UD_UT_COLOR_U              "\x1b[4m"
