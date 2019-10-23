@@ -51,9 +51,7 @@
         size_t len = sizeof(in_val) / sizeof(type); \
         new_arr = ud_ut_malloc(len * sizeof(type)); \
         type *p_new_arr = new_arr; \
-        for (ud_ut_count i = 0; i < len; ++i, ++p_new_arr, ++in_tmp) \
-        *p_new_arr = *in_tmp; \
-        new_arr; \
+        for (ud_ut_count i = 0; i < len; ++i, ++p_new_arr, ++in_tmp) *p_new_arr = *in_tmp; new_arr; \
     })
 
 # define ud_ut_sarray(type, ...) \
@@ -64,9 +62,7 @@
         size_t len = sizeof(in_val) / sizeof(type); \
         new_arr = ud_ut_malloc(len * sizeof(type)); \
         type *p_new_arr = new_arr; \
-        for (ud_ut_count i = 0; i < len; ++i, ++p_new_arr, ++in_tmp) \
-        *p_new_arr = ud_str_dup(*in_tmp); \
-        new_arr; \
+        for (ud_ut_count i = 0; i < len; ++i, ++p_new_arr, ++in_tmp) *p_new_arr = ud_str_dup(*in_tmp); new_arr; \
     })
 
 // Structures
