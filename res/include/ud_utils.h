@@ -25,6 +25,7 @@
 
 # define ud_ut_free(x)              ud_ut_free_ctr((void**)&(x))
 # define UD_UT_PROT_MALLOC(x)       if (!(x)) {return NULL;}
+# define UD_UT_PROT_MALLOC_VOID(x)	if (!(x)) {return ;}
 # define UD_UT_PROT_ARR_TYPE(x, y)  if (x != y) {return NULL;}
 
 # define ud_ut_error(...)           (fprintf(stderr, "%s%s%s[ERROR]%s %s%s: ", UD_UT_COLOR_B, UD_UT_COLOR_U, UD_UT_COLOR_ERR_1, UD_UT_COLOR_N, UD_UT_COLOR_ERR_2, __func__), \
@@ -51,6 +52,17 @@
         new_arr = ud_ut_malloc(len * sizeof(type)); \
         type *p_new_arr = new_arr; \
         for (ud_ut_count i = 0; i < len; ++i, ++p_new_arr, ++in_tmp) *p_new_arr = *in_tmp; new_arr; \
+    })
+
+# define ud_ut_sarray(type, ...) \
+    ({ \
+        type *new_arr; \
+        type in_val[] = {__VA_ARGS__}; \
+        type *in_tmp = in_val; \
+        size_t len = sizeof(in_val) / sizeof(type); \
+        new_arr = ud_ut_malloc(len * sizeof(type)); \
+        type *p_new_arr = new_arr; \
+        for (ud_ut_count i = 0; i < len; ++i, ++p_new_arr, ++in_tmp) *p_new_arr = ud_str_dup(*in_tmp); new_arr; \
     })
 
 // Structures
