@@ -7,7 +7,7 @@
 #include <sys/time.h>
 
 // Macro
-# define UD_ARGS_LEN(type, ...)     (sizeof((type[]){__VA_ARGS__})/sizeof(type))
+# define ud_ut_args_len(type, ...)  (sizeof((type[]){__VA_ARGS__})/sizeof(type))
 # define ud_ut_statica_len(arr)     ({ size_t ret = (arr) ? sizeof(arr)/sizeof(*arr) : 0; ret; })
 # define UD_UT_SPACE_NBR		    4
 # define UD_UT_COLOR_N              "\x1b[0m"
@@ -25,8 +25,8 @@
 # define UD_UT_COLOR_5              "\x1b[38;2;255;1;251m"
 
 # define ud_ut_free(x)              ud_ut_free_ctr((void**)&(x))
-# define UD_UT_PROT_MALLOC(x)       if (!(x)) {return NULL;}
-# define UD_UT_PROT_MALLOC_VOID(x)	if (!(x)) {return ;}
+# define ud_ut_prot_malloc(x)       if (!(x)) {return NULL;}
+# define ud_ut_prot_malloc_void(x)	if (!(x)) {return ;}
 # define UD_UT_PROT_ARR_TYPE(x, y)  if (x != y) {return NULL;}
 
 # define ud_ut_error(...)           (fprintf(stderr, "%s%s%s[ERROR]%s %s%s: ", UD_UT_COLOR_B, UD_UT_COLOR_U, UD_UT_COLOR_ERR_1, UD_UT_COLOR_N, UD_UT_COLOR_ERR_2, __func__), \
