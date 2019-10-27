@@ -1,7 +1,7 @@
 # include <ud_utils.h>
 # include <stdio.h>
 
-static int     ud_ut_byte_cmp_ctr(void *a, void *b, size_t n)
+static int     ud_ut_byte_cmp(void *a, void *b, size_t n)
 {
     char *p_a = (char *)a;
     char *p_b = (char *)b;
