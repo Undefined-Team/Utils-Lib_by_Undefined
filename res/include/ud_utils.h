@@ -51,6 +51,9 @@
     ud_ut_test(fp(a, a)); \
     ud_ut_test(fp(b, b));
 
+# define ud_ut_to_byte(a)           ud_ut_to_byte_ctr(&a, sizeof(a))
+# define ud_ut_byte_cmp(a, b, len)  ud_ut_byte_cmp_ctr((void *)a, (void *)b, len)
+
 # define ud_ut_count                register size_t
 
 # define ud_ut_array(type, ...) \
@@ -106,6 +109,8 @@ void	                            ud_ut_free_ctr(void **ap);
 double                              ud_ut_update_time(void);
 void                                *ud_ut_malloc(size_t len);
 void                                ud_ut_assert_ctr(char *assertion, ud_bool passed, const char function[], const char file[], int line, ud_ut_test_type test_type);
+char                                *ud_ut_to_byte_ctr(void *val, size_t nb_bytes);
+int                                 ud_ut_byte_cmp_ctr(void *a, void *b, size_t n);
 
 extern char                         *ud_ut_color_t[];
 
