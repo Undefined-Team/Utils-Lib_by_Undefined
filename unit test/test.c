@@ -4,6 +4,22 @@
 int main(void)
 {
     int a = 2;
-    ud_ut_assert(a == 1);
+    ud_ut_test(a == 2);
+    ud_ut_test(a == 2);
+    ud_ut_test(a == 2);
+    ud_ut_test(a == 2);
+    ud_ut_test(a == 2);
+    ud_ut_test(a == 2);
+    ud_ut_test(a == 2);
+    ud_ut_test(a == 2);
+    ud_ut_test(a == 2);
+    ud_ut_test(a == 2);
+    ud_ut_test(a == 2);
+    ud_ut_test(a == 2);
+    ud_ut_test(a == 2);
+    ud_ut_test(a == 2);
+    ud_ut_test(a == 2);
+    ud_ut_test(a == 2);
+    printf("\n");
     return (0);
 }

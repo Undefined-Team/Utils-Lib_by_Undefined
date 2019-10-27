@@ -42,7 +42,14 @@
                                     printf(__VA_ARGS__), \
                                     printf("%s\n", UD_UT_COLOR_N))
 
-# define ud_ut_assert(a)            ud_ut_assert_ctr(#a, a, __FUNCTION__, __FILE__, __LINE__)
+# define ud_ut_assert(a)            ud_ut_assert_ctr(#a, a, __FUNCTION__, __FILE__, __LINE__, UD_UT_ASSERT)
+# define ud_ut_test(a)              ud_ut_assert_ctr(#a, a, __FUNCTION__, __FILE__, __LINE__, UD_UT_TEST)
+
+# define ud_ut_test_comb(fp, a, b) \
+    ud_ut_test(fp(a, b)); \
+    ud_ut_test(fp(b, a)); \
+    ud_ut_test(fp(a, a)); \
+    ud_ut_test(fp(b, b));
 
 # define ud_ut_count                register size_t
 
@@ -92,12 +99,13 @@
 
 // Structures
 typedef enum                        {false,true} ud_bool;
+typedef enum                        {UD_UT_ASSERT, UD_UT_TEST, UD_UT_TIME} ud_ut_test_type;
 
 // Prototypes
 void	                            ud_ut_free_ctr(void **ap);
 double                              ud_ut_update_time(void);
 void                                *ud_ut_malloc(size_t len);
-void                                ud_ut_assert_ctr(char *assertion, ud_bool passed, const char function[], const char file[], int line);
+void                                ud_ut_assert_ctr(char *assertion, ud_bool passed, const char function[], const char file[], int line, ud_ut_test_type test_type);
 
 extern char                         *ud_ut_color_t[];
 
