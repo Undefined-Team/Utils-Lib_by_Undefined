@@ -8,14 +8,14 @@ void    ud_ut_assert_ctr(char *assertion, ud_bool passed, const char function[],
     static int nb_error = 0;
     static int nb_test = 0;
     ++nb_test;
-    if (test_type == UD_UT_ASSERT && !passed && ++nb_error) ud_ut_error("Assertion failed: (%s), function %s, file %s, line %d.", assertion, function, file, line);
-    else if (test_type == UD_UT_TEST)
+    if (test_type == UD_UT_TEST)
     {
         if (passed)
             printf("%s✓", UD_UT_COLOR_1);
         else if (++nb_error)
             printf("%s✗ [%s] on line %d (function [%s] in file %s)\n", UD_UT_COLOR_2, assertion, line, function, file);
     }
+    else if (test_type == UD_UT_ASSERT && !passed && ++nb_error) ud_ut_error("Assertion failed: (%s), function %s, file %s, line %d.", assertion, function, file, line);
     else if (test_type == UD_UT_TIME && nb_test--) 
     {
         printf("\n");
