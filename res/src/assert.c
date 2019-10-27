@@ -16,5 +16,9 @@ void    ud_ut_assert_ctr(char *assertion, ud_bool passed, const char function[],
         else if (++nb_error)
             printf("%s✗ [%s] on line %d (function [%s] in file %s)\n", UD_UT_COLOR_2, assertion, line, function, file);
     }
-    else if (test_type == UD_UT_TIME && nb_test--) ud_ut_time("\n%d/%d tests passed", nb_test - nb_error, nb_test);
+    else if (test_type == UD_UT_TIME && nb_test--) 
+    {
+        printf("\n");
+        ud_ut_time("%d/%d tests passed", nb_test - nb_error, nb_test);
+    }
 }
