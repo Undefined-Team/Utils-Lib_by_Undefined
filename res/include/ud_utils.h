@@ -54,6 +54,8 @@
 # define ud_ut_to_bin(a)            ({ typeof(a) _tmp = a; char *_byte_ret = ud_ut_to_bin_ctr(&_tmp, sizeof(a)); _byte_ret; })
 # define ud_ut_from_bin(ctype, bin) ({ char *_buf; ud_ut_from_bin_ctr(&_buf, bin, sizeof(ctype)); ctype _val = *(ctype *)_buf; _val; })
 
+# define ud_ut_swap(a, b)           a ^= b; b ^= a; a ^= b;
+
 # define ud_ut_count                register size_t
 
 # define ud_ut_array(type, ...) \

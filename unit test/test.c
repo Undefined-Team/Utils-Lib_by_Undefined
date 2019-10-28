@@ -31,5 +31,11 @@ int main(void)
     ud_ut_test(ud_ut_from_bin(int, "10000000000000000000000000000000") == -2147483648);
     ud_ut_test(ud_ut_from_bin(long, "1111111111111111111111111111111110000000000000000000000000000000") == -2147483648);
 
+    int d = 5;
+    int e = 2;
+    ud_ut_swap(d, e);
+    ud_ut_test(d == 2);
+    ud_ut_test(e == 5);
+
     return (0);
 }
