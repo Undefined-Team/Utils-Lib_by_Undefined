@@ -2,7 +2,7 @@
 
 void    *ud_ut_from_bin_ctr(char **buf, char *bin, size_t nb_bytes)
 {
-    if (!val) return NULL;
+    if (!bin) return NULL;
     int     n = 1;
     int     endian = -1;                // big endian :     1 == 00000000 00000000 00000000 00000001
     if (*(char *)&n == 1) endian = 1;   // little endian :  1 == 00000001 00000000 00000000 00000000
