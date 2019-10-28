@@ -20,7 +20,7 @@ char    *ud_ut_to_byte_ctr(void *val, size_t nb_bytes)
     size_t  len = nb_bytes * 8;
     char    *byte = malloc((len + 1) * sizeof(char));
     char    *p_byte = byte;
-    char    *p_val = (endian == 1) ? (char *)val : (char *)&val[nb_bytes - 1];
+    char    *p_val = (endian == 1) ? (char *)val : (char *)(val + nb_bytes - 1);
     int     threshold = (endian == 1) ? 8 : -1;
     
     byte[len] = 0;
