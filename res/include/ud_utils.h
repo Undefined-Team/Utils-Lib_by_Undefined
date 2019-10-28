@@ -51,7 +51,8 @@
     ud_ut_test(fp(a, a)); \
     ud_ut_test(fp(b, b));
 
-# define ud_ut_to_byte(a)           ud_ut_to_byte_ctr(&a, sizeof(a))
+# define ud_ut_to_bin(a)            ({ typeof(a) _tmp = a; char *_byte_ret = ud_ut_to_bin_ctr(&_tmp, sizeof(a)); _byte_ret; })
+# define ud_ut_from_bin(ctype, bin) ({ char *_buf; ud_ut_from_bin_ctr(&_buf, bin, sizeof(ctype)); ctype _val = *(ctype *)_buf; _val; })
 
 # define ud_ut_count                register size_t
 
@@ -108,7 +109,8 @@ void	                            ud_ut_free_ctr(void **ap);
 double                              ud_ut_update_time(void);
 void                                *ud_ut_malloc(size_t len);
 void                                ud_ut_assert_ctr(char *assertion, ud_bool passed, const char function[], const char file[], int line, ud_ut_test_type test_type);
-char                                *ud_ut_to_byte_ctr(void *val, size_t nb_bytes);
+char                                *ud_ut_to_bin_ctr(void *val, size_t nb_bytes);
+void                                *ud_ut_from_bin_ctr(char **buf, char *bin, size_t nb_bytes);
 
 extern char                         *ud_ut_color_t[];
 
