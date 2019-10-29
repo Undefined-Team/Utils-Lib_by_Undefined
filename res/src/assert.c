@@ -13,7 +13,7 @@ void    ud_ut_assert_ctr(char *assertion, ud_bool passed, const char function[],
         if (passed)
             printf("%s✓%s", UD_UT_COLOR_1, UD_UT_COLOR_N);
         else if (++nb_error)
-            printf("%s✗ [%s] on line %d (function [%s] in file %s)%s\n", UD_UT_COLOR_2, assertion, line, function, file, UD_UT_COLOR_N);
+            printf("\n%s✗ [%s] on line %d (function [%s] in file %s)%s\n", UD_UT_COLOR_2, assertion, line, function, file, UD_UT_COLOR_N);
     }
     else if (test_type == UD_UT_ASSERT && !passed && ++nb_error) ud_ut_error("Assertion failed: (%s), function %s, file %s, line %d.", assertion, function, file, line);
     else if (test_type == UD_UT_TIME && nb_test--) 
