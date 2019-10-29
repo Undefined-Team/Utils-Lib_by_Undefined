@@ -32,7 +32,6 @@ int main(void)
     ud_ut_test(ud_ut_from_bin(int, "01111111111111111111111111111111") == 2147483647);
     ud_ut_test(ud_ut_from_bin(int, "10000000000000000000000000000000") == -2147483648);
     ud_ut_test(ud_ut_from_bin(long, "1111111111111111111111111111111110000000000000000000000000000000") == -2147483648);
-    ud_ut_test(!ud_ut_byte_cmp("abcd", ud_ut_array_from_bin(char, 5, "0110000101100010011000110110010000000000"), 5));
 
     int d = 5;
     int e = 2;
