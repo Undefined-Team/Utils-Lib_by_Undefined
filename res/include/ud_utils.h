@@ -44,6 +44,7 @@
 
 # define ud_ut_assert(a)            ud_ut_assert_ctr(#a, a, __FUNCTION__, __FILE__, __LINE__, UD_UT_ASSERT)
 # define ud_ut_test(a)              ud_ut_assert_ctr(#a, a, __FUNCTION__, __FILE__, __LINE__, UD_UT_TEST)
+# define ud_ut_dtest(a, form, ...)  ({ int _ret = ud_ut_assert_ctr(#a, a, __FUNCTION__, __FILE__, __LINE__, UD_UT_TEST); if (!_ret) {printf("%s>> ", UD_UT_COLOR_2); printf(form, __VA_ARGS__); printf("\n");} _ret; })
 
 # define ud_ut_test_comb(fp, a, b) \
     ud_ut_test(fp(a, b)); \
@@ -110,7 +111,7 @@ typedef enum                        {UD_UT_ASSERT, UD_UT_TEST, UD_UT_TIME} ud_ut
 void	                            ud_ut_free_ctr(void **ap);
 double                              ud_ut_update_time(void);
 void                                *ud_ut_malloc(size_t len);
-void                                ud_ut_assert_ctr(char *assertion, ud_bool passed, const char function[], const char file[], int line, ud_ut_test_type test_type);
+int                                 ud_ut_assert_ctr(char *assertion, ud_bool passed, const char function[], const char file[], int line, ud_ut_test_type test_type);
 char                                *ud_ut_to_bin_ctr(void *val, size_t nb_bytes);
 void                                *ud_ut_from_bin_ctr(char **buf, char *bin, size_t nb_bytes);
 
