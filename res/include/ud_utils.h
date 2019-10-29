@@ -51,8 +51,9 @@
     ud_ut_test(fp(a, a)); \
     ud_ut_test(fp(b, b));
 
-# define ud_ut_to_bin(a)            ({ typeof(a) _tmp = a; char *_byte_ret = ud_ut_to_bin_ctr(&_tmp, sizeof(a)); _byte_ret; })
-# define ud_ut_from_bin(ctype, bin) ({ char *_buf; ud_ut_from_bin_ctr(&_buf, bin, sizeof(ctype)); ctype _val = *(ctype *)_buf; _val; })
+# define ud_ut_to_bin(a)                        ({ typeof(a) _tmp = a; char *_byte_ret = ud_ut_to_bin_ctr(&_tmp, sizeof(a)); _byte_ret; })
+# define ud_ut_from_bin(ctype, bin)             ({ char *_buf; ud_ut_from_bin_ctr(&_buf, bin, sizeof(ctype), false); ctype _val = *(ctype *)_buf; _val; })
+# define ud_ut_array_from_bin(ctype, size, bin) ({ char *_buf; ud_ut_from_bin_ctr(&_buf, bin, size, true); ctype _val[size]; for (ud_ut_count i = 0; i < size; ++i, ++_buf) _val[i] = *_buf; _val; })
 
 # define ud_ut_swap(a, b)           a ^= b; b ^= a; a ^= b;
 
@@ -112,7 +113,7 @@ double                              ud_ut_update_time(void);
 void                                *ud_ut_malloc(size_t len);
 void                                ud_ut_assert_ctr(char *assertion, ud_bool passed, const char function[], const char file[], int line, ud_ut_test_type test_type);
 char                                *ud_ut_to_bin_ctr(void *val, size_t nb_bytes);
-void                                *ud_ut_from_bin_ctr(char **buf, char *bin, size_t nb_bytes);
+void                                *ud_ut_from_bin_ctr(char **buf, char *bin, size_t nb_bytes, ud_bool is_array);
 
 extern char                         *ud_ut_color_t[];
 
