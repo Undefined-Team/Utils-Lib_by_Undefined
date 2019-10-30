@@ -44,7 +44,7 @@
 
 # define ud_ut_assert(a)            ud_ut_assert_ctr(#a, a, __FUNCTION__, __FILE__, __LINE__, UD_UT_ASSERT)
 # define ud_ut_test(a)              ud_ut_assert_ctr(#a, a, __FUNCTION__, __FILE__, __LINE__, UD_UT_TEST)
-# define ud_ut_dtest(a, form, ...)  ({ int _ret = ud_ut_assert_ctr(#a, a, __FUNCTION__, __FILE__, __LINE__, UD_UT_TEST); if (!_ret) {printf("%s>> ", UD_UT_COLOR_2); printf(form, __VA_ARGS__); printf("\n");} _ret; })
+# define ud_ut_dtest(a, form, ...)  ({ int _ret = ud_ut_assert_ctr(#a, a, __FUNCTION__, __FILE__, __LINE__, UD_UT_TEST); if (!_ret) {printf("%s>> ", UD_UT_COLOR_2); printf(form, __VA_ARGS__); printf("%s\n", UD_UT_COLOR_N);} _ret; })
 
 # define ud_ut_test_comb(fp, a, b) \
     ud_ut_test(fp(a, b)); \
