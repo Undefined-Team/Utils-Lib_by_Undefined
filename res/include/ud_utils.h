@@ -44,7 +44,7 @@
 
 # define ud_ut_assert(a)                ud_ut_assert_ctr(#a, a, __FUNCTION__, __FILE__, __LINE__, UD_UT_ASSERT)
 # define ud_ut_test(a)                  ud_ut_assert_ctr(#a, a, __FUNCTION__, __FILE__, __LINE__, UD_UT_TEST)
-# define ud_ut_dtest(_a, _form, ...)    ({ int _ret = ud_ut_assert_ctr(#_a, _a, __FUNCTION__, __FILE__, __LINE__, UD_UT_TEST); if (!_ret) {printf("%s>> ", UD_UT_COLOR_2); printf(form, __VA_ARGS__); printf("%s\n", UD_UT_COLOR_N);} _ret; })
+# define ud_ut_dtest(_a, _form, ...)    ({ int _ret = ud_ut_assert_ctr(#_a, _a, __FUNCTION__, __FILE__, __LINE__, UD_UT_TEST); if (!_ret) {printf("%s>> ", UD_UT_COLOR_2); printf(_form, __VA_ARGS__); printf("%s\n", UD_UT_COLOR_N);} _ret; })
 
 # define ud_ut_test_comb(fp, a, b) \
     ud_ut_test(fp(a, b)); \
@@ -63,11 +63,11 @@
     ({ \
         _type *_new_arr; \
         _type _in_val[] = {__VA_ARGS__}; \
-        _type *in_tmp = _in_val; \
+        _type *_in_tmp = _in_val; \
         size_t _len = sizeof(_in_val) / sizeof(_type); \
         _new_arr = ud_ut_malloc(_len * sizeof(_type)); \
         _type *_p_new_arr = _new_arr; \
-        for (ud_ut_count _i = 0; _i < len; ++_i) *_p_new_arr++ = *_in_tmp++; _new_arr; \
+        for (ud_ut_count _i = 0; _i < _len; ++_i) *_p_new_arr++ = *_in_tmp++; _new_arr; \
     })
 
 # define ud_ut_sarray(_type, ...) \
@@ -80,7 +80,7 @@
         { \
             _new_arr = ud_ut_malloc(_len * sizeof(_type)); \
             _type *_p_new_arr = _new_arr; \
-            for (ud_ut_count _i = 0; _i < len; ++_i) *_p_new_arr++ = ud_str_dup(*_in_tmp++); \
+            for (ud_ut_count _i = 0; _i < _len; ++_i) *_p_new_arr++ = ud_str_dup(*_in_tmp++); \
         } \
         else _new_arr = NULL; \
         _new_arr; \
