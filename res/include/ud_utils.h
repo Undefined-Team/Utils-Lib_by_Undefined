@@ -67,7 +67,7 @@
         size_t _len = sizeof(_in_val) / sizeof(_type); \
         _new_arr = ud_ut_malloc(_len * sizeof(_type)); \
         _type *_p_new_arr = _new_arr; \
-        for (ud_ut_count _i = 0; _i < _len; ++_i) *_p_new_arr++ = *_in_tmp++; \ 
+        for (ud_ut_count _i = 0; _i < _len; ++_i) *_p_new_arr++ = *_in_tmp++; \
         _new_arr; \
     })
 
