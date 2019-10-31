@@ -8,7 +8,7 @@
 
 // Macro
 # define ud_ut_args_len(type, ...)      (sizeof((type[]){__VA_ARGS__})/sizeof(type))
-# define ud_ut_statica_len(arr)         ({ size_t ret = (arr) ? sizeof(arr)/sizeof(*arr) : 0; ret; })
+# define ud_ut_statica_len(_arr)        ({ __auto_type _arrt = _arr; size_t _ret = (_arrt) ? sizeof(_arrt)/sizeof(*(_arrt)) : 0; _ret; })
 # define UD_UT_SPACE_NBR		        4
 # define UD_UT_COLOR_N                  "\x1b[0m"
 # define UD_UT_COLOR_U                  "\x1b[4m"
@@ -24,10 +24,9 @@
 # define UD_UT_COLOR_4                  "\x1b[38;2;255;127;17m"
 # define UD_UT_COLOR_5                  "\x1b[38;2;255;1;251m"
 
-# define ud_ut_free(x)                  ud_ut_free_ctr((void**)&(x))
-# define ud_ut_prot_malloc(x)           if (!(x)) {return NULL;}
-# define ud_ut_prot_malloc_void(x)	    if (!(x)) {return ;}
-# define UD_UT_PROT_ARR_TYPE(x, y)      if (x != y) {return NULL;}
+# define ud_ut_free(_x)                 ud_ut_free_ctr((void**)&(_x))
+# define ud_ut_prot_malloc(_x)          if (!(_x)) {return NULL;}
+# define ud_ut_prot_malloc_void(_x)	    if (!(_x)) {return ;}
 
 # define ud_ut_error(...)               (fprintf(stderr, "%s%s%s[ERROR]%s %s%s: ", UD_UT_COLOR_B, UD_UT_COLOR_U, UD_UT_COLOR_ERR_1, UD_UT_COLOR_N, UD_UT_COLOR_ERR_2, __func__), \
                                         fprintf(stderr, __VA_ARGS__), \
@@ -42,15 +41,9 @@
                                         printf(__VA_ARGS__), \
                                         printf("%s\n", UD_UT_COLOR_N))
 
-# define ud_ut_assert(a)                ud_ut_assert_ctr(#a, a, __FUNCTION__, __FILE__, __LINE__, UD_UT_ASSERT)
-# define ud_ut_test(a)                  ud_ut_assert_ctr(#a, a, __FUNCTION__, __FILE__, __LINE__, UD_UT_TEST)
+# define ud_ut_assert(_a)               ud_ut_assert_ctr(#_a, _a, __FUNCTION__, __FILE__, __LINE__, UD_UT_ASSERT)
+# define ud_ut_test(_a)                 ud_ut_assert_ctr(#_a, _a, __FUNCTION__, __FILE__, __LINE__, UD_UT_TEST)
 # define ud_ut_dtest(_a, _form, ...)    ({ int _ret = ud_ut_assert_ctr(#_a, _a, __FUNCTION__, __FILE__, __LINE__, UD_UT_TEST); if (!_ret) {printf("%s>> ", UD_UT_COLOR_2); printf(_form, __VA_ARGS__); printf("%s\n", UD_UT_COLOR_N);} _ret; })
-
-# define ud_ut_test_comb(fp, a, b) \
-    ud_ut_test(fp(a, b)); \
-    ud_ut_test(fp(b, a)); \
-    ud_ut_test(fp(a, a)); \
-    ud_ut_test(fp(b, b));
 
 # define ud_ut_to_bin(_a)               ({ typeof(_a) _tmp = _a; char *_byte_ret = ud_ut_to_bin_ctr(&_tmp, sizeof(_a)); _byte_ret; })
 # define ud_ut_from_bin(_ctype, _bin)   ({ char *_buf; ud_ut_from_bin_ctr(&_buf, _bin, sizeof(_ctype)); _ctype _val = *(_ctype *)_buf; _val; })
