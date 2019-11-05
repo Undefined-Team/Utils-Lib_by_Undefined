@@ -8,7 +8,7 @@
 
 // Macro
 # define ud_ut_args_len(type, ...)      (sizeof((type[]){__VA_ARGS__})/sizeof(type))
-# define ud_ut_statica_len(_arr)        ({ __auto_type _arrt = _arr; size_t _ret = (_arrt) ? sizeof(_arrt)/sizeof(*(_arrt)) : 0; _ret; })
+# define ud_ut_statica_len(_arr)        ((_arr) ? sizeof(_arr)/sizeof(*(_arr)) : 0)
 # define UD_UT_SPACE_NBR		        4
 # define UD_UT_COLOR_N                  "\x1b[0m"
 # define UD_UT_COLOR_U                  "\x1b[4m"
